@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const shopController = require("../controllers/shopController");
+const shopController = require("../controllers/ShopController");
 
 // Define routes
 router.post("/", shopController.createShop);
