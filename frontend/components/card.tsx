@@ -31,7 +31,7 @@ export function ShopCard() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/shops")
+      .get("https://bazarconnect.onrender.com/api/shops")
       .then((res) => {
         console.log(res.data); 
         setShops(res.data);
