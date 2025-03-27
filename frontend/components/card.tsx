@@ -1,6 +1,10 @@
-import * as React from "react"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,25 +12,62 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
+export function ShopCard() {
+  interface Shop {
+    _id: string;
+    name: string;
+    city: string;
+    state: string;
+    country: string;
+    description: string;
+    images?: string[];
+  }
 
-export function CardWithForm() {
+  const [shops, setShops] = useState<Shop[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/shops")
+      .then((res) => {
+        console.log(res.data); 
+        setShops(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Failed to load shop data.");
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>Chandigarh University - Canteen </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-<img className="h-auto max-w-full" src="https://i.guim.co.uk/img/media/d543b9f0fb5a827b3908c72d4091bc9e1d5e2841/0_303_8214_4928/master/8214.jpg?width=1200&quality=85&auto=format&fit=max&s=e082f028060b9b9a0d4e5af258a09541" alt="image description" />
-
-<CardDescription>The Chandigarh University Canteen website offers a convenient platform for students and staff to explore diverse, delicious, and healthy meal options on campus. Enjoy quick ordering, daily specials, and real-time updates on food availability right at your fingertips.</CardDescription>
-
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button>Shop Now</Button>
-      </CardFooter>
-    </Card>
-  )
+      {shops.map((shop) => (
+        <Card key={shop._id} className="w-[350px]">
+          <CardHeader>
+            <CardTitle>{shop.name}</CardTitle>
+            <p className="text-sm text-gray-500">{shop.city}, {shop.state}, {shop.country}</p>
+          </CardHeader>
+          <CardContent>
+            <img
+              className="h-48 w-full object-cover rounded-lg"
+              src={shop.images?.[0] || "https://via.placeholder.com/300"}
+              alt={shop.name}
+            />
+            <CardDescription>{shop.description}</CardDescription>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button>Visit Store</Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  );
 }

@@ -13,6 +13,7 @@ const { errorMiddleware } = require("./middleware/errorMiddleware");
 const session = require("express-session");
 passport = require("passport");
 const passportConfig = require("./config/passport");
+const cors = require("cors");
 
 //setup dotenv
 dotenv.config();
@@ -45,10 +46,11 @@ app.use((req, res, next) => {
 });
 
 // Middleware
-app.use(express.json()); // For parsing application/json
+app.use(express.json());
 app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors());
 
 // Use user and shop routes
 app.use("/api/users", userRoutes);

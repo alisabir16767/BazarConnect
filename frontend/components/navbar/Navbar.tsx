@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import ThemeToggle from '../ThemeToggle';
 import HoverCardComponent from '../HoverCard';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar/avatar";
 import SearchBox from '../SearchBox';
@@ -90,7 +89,6 @@ export default function Navbar() {
                       </Link>
                     </li>
                     <li>
-                      <ThemeToggle />
                     </li>
                   </ul>
                 }
@@ -171,7 +169,6 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <ThemeToggle />
           </li>
         </ul>
       </div>
