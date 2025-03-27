@@ -3,25 +3,34 @@ const Shop = require("../models/Shop");
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 const { productSchema } = require("../validation/productValidation");
 
-// Create a new product
 exports.createProduct = asyncWrap(async (req, res, next) => {
   const { error, value } = productSchema.validate(req.body);
   if (error) {
+    console.error("Validation Error:", error.details[0].message); // Debugging
     return next(new ExpressError(400, error.details[0].message));
   }
 
+  // Check if shop_id is a valid ObjectId
   const { shop_id } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(shop_id)) {
+    return next(new ExpressError(400, "Invalid shop_id format"));
+  }
+
+  // Ensure shop exists
   const shop = await Shop.findById(shop_id);
   if (!shop) {
     return next(new ExpressError(404, "Shop not found"));
   }
 
+  // Create and save new product
   const newProduct = new Product(req.body);
   await newProduct.save();
+
+  // Add product to shop's product list
   shop.products.push(newProduct._id);
   await shop.save();
 
-  res.status(201).json({ message: "New Product created" });
+  res.status(201).json({ message: "New Product created", product: newProduct });
 });
 
 // Get all products
@@ -40,16 +49,20 @@ exports.getById = asyncWrap(async (req, res, next) => {
 });
 
 // Get products by shop_id
-exports.getProductByShop_id = asyncWrap(async (req, res, next) => {
-  const shop = await Shop.findById(req.params.shopId);
+exports.getProductByShopId = asyncWrap(async (req, res, next) => {
+  const { shopId } = req.params;
+  const shop = await Shop.findById(shopId);
   if (!shop) {
     return res.status(404).json({ message: "Shop not found" });
   }
+  const products = await Product.find({ shop_id: shopId });
 
-  const products = shop.products;
   if (!products || products.length === 0) {
-    return next(new ExpressError(404, "Product Not Found"));
+    return res
+      .status(404)
+      .json({ message: "No products found for this shop." });
   }
+
   res.status(200).json(products);
 });
 

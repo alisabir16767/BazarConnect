@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,12 +29,18 @@ export function ShopCard() {
   const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const router = useRouter();  // ✅ Use Next.js router
+
+  const handleVisitStore = (shopId: string) => {
+    router.push(`/shop/${shopId}/products`); // ✅ Navigate to shop's product page
+  };
 
   useEffect(() => {
     axios
       .get("https://bazarconnect.onrender.com/api/shops")
       .then((res) => {
-        console.log(res.data); 
+        console.log(res.data);
         setShops(res.data);
         setLoading(false);
       })
@@ -53,7 +60,9 @@ export function ShopCard() {
         <Card key={shop._id} className="w-[350px]">
           <CardHeader>
             <CardTitle>{shop.name}</CardTitle>
-            <p className="text-sm text-gray-500">{shop.city}, {shop.state}, {shop.country}</p>
+            <p className="text-sm text-gray-500">
+              {shop.city}, {shop.state}, {shop.country}
+            </p>
           </CardHeader>
           <CardContent>
             <img
@@ -64,7 +73,7 @@ export function ShopCard() {
             <CardDescription>{shop.description}</CardDescription>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button>Visit Store</Button>
+            <Button onClick={() => handleVisitStore(shop._id)}>Visit Store</Button>
           </CardFooter>
         </Card>
       ))}
