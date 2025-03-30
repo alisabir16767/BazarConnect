@@ -58,7 +58,7 @@ export default function Navbar() {
                   <ul className="space-y-2 animate-fade-in">
                     <li>
                       <Link
-                        href="/SignUp"
+                        href="/signup"
                         className="text-foreground hover:text-primary block px-3 py-2 rounded-md transition-transform duration-300 hover:scale-105"
                       >
                         SignUp

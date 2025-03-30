@@ -21,7 +21,7 @@ interface Shop {
   name: string;
   description: string;
   owner_id: string;
-  products: string[]; // Product IDs
+  products: string[]; 
   images?: string[];
 }
 
@@ -39,7 +39,6 @@ export default function ShopProductsPage() {
       try {
         setLoading(true);
         
-        // Fetch shop details
         const shopResponse = await axios.get(
           `https://bazarconnect.onrender.com/api/shops/${encodeURIComponent(Array.isArray(shopId) ? shopId[0] : shopId)}`
         );

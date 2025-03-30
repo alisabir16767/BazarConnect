@@ -10,7 +10,7 @@ const productSchema = Joi.object({
 
   review: Joi.array().items(Joi.string().pattern(objectIdPattern)).optional(),
 
-  name: Joi.string().required(),
+  name: Joi.string().required().default("Unnamed Product"),
   description: Joi.string().required(),
   price: Joi.number().positive().required(),
   quantity: Joi.number().integer().min(0).required(),
@@ -18,8 +18,8 @@ const productSchema = Joi.object({
 
   images: Joi.array().items(Joi.string().uri().required()).required(),
 
-  created_at: Joi.date().default(() => new Date(), "current date"),
-  updated_at: Joi.date().default(() => new Date(), "current date"),
+  created_at: Joi.date().default(() => new Date()),
+  updated_at: Joi.date().default(() => new Date()),
 }).required();
 
 module.exports = { productSchema };

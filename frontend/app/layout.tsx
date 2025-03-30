@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Head from "next/head";
 import Footer from "@/components/navbar/Footer";
+import Navbar from "@/components/navbar/Navbar";
+import ReduxProvider from "./redux/Provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,26 +24,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <Head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{String(metadata.title)}</title>
-        <meta name="description" content={metadata.description ?? ""} />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ReduxProvider>
+          <Navbar />
           <div className="flex flex-col min-h-screen">
             {/* Main Content */}
             <main className="flex-grow px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12">
               {children}
             </main>
-
             {/* Footer */}
             <Footer />
           </div>
+        </ReduxProvider>
       </body>
     </html>
   );
