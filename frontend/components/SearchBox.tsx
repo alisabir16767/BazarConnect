@@ -12,7 +12,6 @@ export default function SearchBox() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Redirect to a search results page with the query as a parameter
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
     }

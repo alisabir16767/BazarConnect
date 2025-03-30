@@ -15,7 +15,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// ✅ Define TypeScript Interface
 interface Shop {
   _id: string;
   name: string;
@@ -31,9 +30,8 @@ export function ShopCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const router = useRouter(); // ✅ Next.js router
+  const router = useRouter(); 
 
-  // ✅ Navigate to shop's product page
   const handleVisitStore = (shopId: string) => {
     router.push(`/shop/${shopId}/products`);
   };
@@ -62,7 +60,12 @@ export function ShopCard() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {loading && <p className="text-center text-gray-500">Loading shops...</p>}
+{loading && (
+  <div className="flex justify-center items-center h-40">
+    <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-solid"></div>
+    <p className="ml-3 text-lg text-gray-600 font-semibold">Loading shops...</p>
+  </div>
+)}
       {!loading && error && <p className="text-red-500">{error}</p>}
 
       {shops.map((shop) => (

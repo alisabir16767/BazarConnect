@@ -5,7 +5,6 @@ const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 exports.createUsers = asyncWrap(async (req, res, next) => {
   const { email, username } = req.body;
 
-  // Check for existing user by email or username
   const existingUser = await User.findOne({ $or: [{ email }, { username }] });
   if (existingUser) {
     return next(new ExpressError(400, "Email or username already exists"));

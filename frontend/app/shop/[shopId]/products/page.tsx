@@ -1,81 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchShopAndProducts } from "../../../redux/slices/shopSlice"; 
+import { RootState, AppDispatch } from "../../../redux/store"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Navbar from "@/components/navbar/Navbar";
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  category: string;
-  images?: string[];
-}
-
-interface Shop {
-  _id: string;
-  name: string;
-  description: string;
-  owner_id: string;
-  products: string[]; 
-  images?: string[];
-}
 
 export default function ShopProductsPage() {
   const { shopId } = useParams();
-  const [shop, setShop] = useState<Shop | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  
+  const { shop, products, loading, error } = useSelector((state: RootState) => state.shop);
 
   useEffect(() => {
-    if (!shopId) return;
-
-    const fetchShopData = async () => {
-      try {
-        setLoading(true);
-        
-        const shopResponse = await axios.get(
-          `https://bazarconnect.onrender.com/api/shops/${encodeURIComponent(Array.isArray(shopId) ? shopId[0] : shopId)}`
-        );
-        setShop(shopResponse.data);
-
-        const productIds = shopResponse.data.products;
-
-        if (!productIds || productIds.length === 0) {
-          setProducts([]);
-          return;
-        }
-
-        // Fetch product details for each product ID
-        const productRequests = productIds.map((productId: string) =>
-          axios.get(`https://bazarconnect.onrender.com/api/products/${productId}`)
-        );
-
-        const productResponses = await Promise.all(productRequests);
-        const productData = productResponses.map(res => res.data);
-        setProducts(productData);
-
-      } catch (error) {
-        console.error("Error fetching shop/products:", error);
-        setError("Failed to load shop details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchShopData();
-  }, [shopId]);
+    if (typeof shopId === "string") {
+      dispatch(fetchShopAndProducts(shopId));
+    }
+  }, [dispatch, shopId]);
 
   return (
     <>
-      <Navbar />
       <div className="container mx-auto p-4">
-        {loading && <p>Loading...</p>}
+        {loading && (
+          <div className="flex justify-center items-center h-40">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-solid"></div>
+            <p className="ml-3 text-lg text-gray-600 font-semibold">Loading shops...</p>
+          </div>
+        )}
         {error && <p className="text-red-500">{error}</p>}
 
         {shop && (
@@ -95,7 +47,7 @@ export default function ShopProductsPage() {
               <CardContent>
                 <img
                   className="h-40 w-full object-cover rounded-lg"
-                  src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
+                  src={product.images?.[0] || "https://via.placeholder.com/150"}
                   alt={product.name}
                 />
                 <p className="text-gray-700">{product.description}</p>
