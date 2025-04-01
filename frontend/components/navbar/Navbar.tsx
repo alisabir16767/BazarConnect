@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar/avatar";
 import SearchBox from '../SearchBox'; 
 
 export default function Navbar() {
@@ -33,11 +32,7 @@ export default function Navbar() {
             Login
           </Link>
           
-          {/* Avatar */}
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+         
         </div>
 
         {/* Mobile Menu Button */}

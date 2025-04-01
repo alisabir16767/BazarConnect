@@ -59,17 +59,17 @@ export function ShopCard() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 {loading && (
   <div className="flex justify-center items-center h-40">
-    <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-solid"></div>
+    <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500 border-solid"></div>
     <p className="ml-3 text-lg text-gray-600 font-semibold">Loading shops...</p>
   </div>
 )}
       {!loading && error && <p className="text-red-500">{error}</p>}
 
       {shops.map((shop) => (
-        <Card key={shop._id} className="w-[350px] shadow-lg">
+        <Card key={shop._id} className="w-[330px] shadow-lg">
           <CardHeader>
             <CardTitle>{shop.name}</CardTitle>
             <p className="text-sm text-gray-500">

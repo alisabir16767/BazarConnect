@@ -24,8 +24,8 @@ export default function ShopProductsPage() {
       <div className="container mx-auto p-4">
         {loading && (
           <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-solid"></div>
-            <p className="ml-3 text-lg text-gray-600 font-semibold">Loading shops...</p>
+            <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500 border-solid"></div>
+            <p className="ml-3 text-lg text-gray-600 font-semibold">Loading Products...</p>
           </div>
         )}
         {error && <p className="text-red-500">{error}</p>}
@@ -38,7 +38,7 @@ export default function ShopProductsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {products.map((product) => (
             <Card key={product._id} className="w-[300px]">
               <CardHeader>
