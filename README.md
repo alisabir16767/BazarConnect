@@ -115,10 +115,4 @@ RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 
 We welcome contributions! Feel free to submit a pull request or open an issue.
 
-## 📝 License
-
-This project is licensed under the **MIT License**.
-
----
-
 Made with ❤️ by **BazarConnect Team**
