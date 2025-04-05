@@ -39,8 +39,10 @@ export function ShopCard() {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/shops`);
-
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/shops`
+        );
+        console.log("API URL:", `${process.env.NEXT_PUBLIC_API_URL}/shops`);
         if (Array.isArray(res.data)) {
           setShops(res.data);
         } else {
@@ -80,7 +82,7 @@ export function ShopCard() {
               className="h-48 w-full object-cover rounded-lg"
               src={shop.images?.[0] || "/placeholder.jpg"} 
               alt={shop.name}
-              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")} 
+              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")} // ✅ Falon error
             />
             <CardDescription>{shop.description}</CardDescription>
           </CardContent>
