@@ -39,9 +39,8 @@ export function ShopCard() {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/shops`
-        );
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/shops`);
+
         if (Array.isArray(res.data)) {
           setShops(res.data);
         } else {
@@ -79,9 +78,9 @@ export function ShopCard() {
           <CardContent>
             <img
               className="h-48 w-full object-cover rounded-lg"
-              src={shop.images?.[0] || "/placeholder.jpg"} // ✅ Uses local fallback image
+              src={shop.images?.[0] || "/placeholder.jpg"} 
               alt={shop.name}
-              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")} // ✅ Fallback on error
+              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")} 
             />
             <CardDescription>{shop.description}</CardDescription>
           </CardContent>
