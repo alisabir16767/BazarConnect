@@ -53,7 +53,7 @@ const userData = [
 const shopData = [
   // Define your shop data here
   {
-    owner_id: "609c183e6fd2f11e4ca2b555", // Replace with an existing user ID from your User collection
+    owner_id: "609c183e6fd2f11e4ca2b555",
     name: "Example Shop 1",
     description: "This is a sample shop description.",
     city: "New York",
