@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+
 export default function SignUpForm() {
   const [formData, setFormData] = useState({
     username: "",
@@ -17,7 +18,7 @@ export default function SignUpForm() {
     state: "",
     country: "",
     zip_code: "",
-    role: "customer", // default role
+    role: "customer", 
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -28,13 +29,14 @@ export default function SignUpForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/signup", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
+      console.log(`${process.env.NEXT_PUBLIC_API_URL}/users/signup`);
 
       if (response.ok) {
         alert("Signup successful!");

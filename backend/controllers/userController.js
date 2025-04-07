@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 const { validationResult } = require("express-validator");
+const passport = require("passport");
 
 // Create a new user
 exports.createUser = asyncWrap(async (req, res, next) => {
@@ -26,15 +27,20 @@ exports.createUser = asyncWrap(async (req, res, next) => {
   try {
     const newUser = await User.register(new User(req.body), req.body.password);
 
-    // Remove sensitive data before sending response
-    const userObj = newUser.toObject();
-    delete userObj.hash;
-    delete userObj.salt;
+    // ✅ Automatically log the user in after registration
+    req.login(newUser, (err) => {
+      if (err)
+        return next(new ExpressError(500, "Login after registration failed"));
 
-    res.status(201).json({
-      success: true,
-      message: "User created successfully",
-      user: userObj,
+      const userObj = newUser.toObject();
+      delete userObj.hash;
+      delete userObj.salt;
+
+      res.status(201).json({
+        success: true,
+        message: "User registered and logged in successfully",
+        user: userObj,
+      });
     });
   } catch (err) {
     next(new ExpressError(400, err.message));

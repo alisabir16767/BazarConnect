@@ -42,7 +42,6 @@ export function ShopCard() {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/shops`
         );
-        console.log("API URL:", `${process.env.NEXT_PUBLIC_API_URL}/shops`);
         if (Array.isArray(res.data)) {
           setShops(res.data);
         } else {

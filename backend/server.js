@@ -11,7 +11,6 @@ const connectDB = require("./config/db");
 const passportConfig = require("./config/passport");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 
-const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const shopRoutes = require("./routes/shopRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -30,7 +29,7 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 WEEK
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
@@ -72,7 +71,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
 
-app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/shops", shopRoutes);
 app.use("/api/products", productRoutes);
