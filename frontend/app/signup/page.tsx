@@ -29,6 +29,7 @@ export default function SignUpForm() {
     e.preventDefault();
 
     try {
+      console.log("Form Data:", formData);
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/signup`, {
         method: "POST",
         headers: {
