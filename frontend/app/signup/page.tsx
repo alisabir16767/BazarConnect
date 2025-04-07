@@ -17,10 +17,10 @@ export default function SignUpForm() {
     state: "",
     country: "",
     zip_code: "",
-    role: "customer",
+    role: "customer", // default role
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
@@ -38,7 +38,19 @@ export default function SignUpForm() {
 
       if (response.ok) {
         alert("Signup successful!");
-        // optionally reset form or redirect
+        // Optionally clear the form
+        setFormData({
+          username: "",
+          email: "",
+          password: "",
+          name: "",
+          address: "",
+          city: "",
+          state: "",
+          country: "",
+          zip_code: "",
+          role: "customer",
+        });
       } else {
         const error = await response.json();
         alert("Signup failed: " + error.message);
@@ -79,6 +91,20 @@ export default function SignUpForm() {
                 />
               </div>
             ))}
+
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <select
+                id="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="w-full border border-input rounded-md px-3 py-2 text-sm bg-white"
+              >
+                <option value="customer">Customer</option>
+                <option value="seller">Seller</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
 
             <Button type="submit" className="w-full">
               Sign Up
