@@ -24,12 +24,29 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://bazzarconnect-frontend.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
+app.use(morgan("dev"));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 WEEK
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
@@ -40,33 +57,8 @@ const sessionConfig = {
   }),
 };
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://bazzarconnect-frontend.vercel.app",
-];
-
-app.use(morgan("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-app.options("*", cors());
-
 app.use(session(sessionConfig));
+
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
@@ -82,13 +74,11 @@ app.use("/api/carts", cartRoutes);
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date() });
 });
-
 app.use(errorMiddleware);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Endpoint not found" });
 });
-
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
