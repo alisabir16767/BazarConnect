@@ -40,7 +40,7 @@ const LoginForm = () => {
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post("/api/auth/login", data);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/login` ,data);
       console.log(response.data);
 
       toast({
