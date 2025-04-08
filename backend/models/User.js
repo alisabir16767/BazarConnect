@@ -57,15 +57,16 @@ const userSchema = new mongoose.Schema(
       trim: true,
       validate: {
         validator: function (v) {
-          // Basic zip code validation pattern (US and Canada)
           return (
-            /^\d{5}(-\d{4})?$/.test(v) ||
-            /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(v)
+            /^\d{5}(-\d{4})?$/.test(v) || // US ZIP
+            /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(v) || // Canadian
+            /^\d{6}$/.test(v) // Indian PIN code
           );
         },
         message: "Invalid zip/postal code format",
       },
     },
+
     isVerified: {
       type: Boolean,
       default: false,
