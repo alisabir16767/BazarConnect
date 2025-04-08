@@ -8,7 +8,7 @@ import axios from "axios";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // null = loading, true/false = known
 
   useEffect(() => {
     axios
