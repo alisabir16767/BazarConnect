@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/navbar/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import ReduxProvider from "./redux/Provider";
+import { Toaster } from "@/components/ui/toaster"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="flex-grow px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12">
               {children}
             </main>
-            {/* Footer */}
+            <Toaster/>
             <Footer />
           </div>
         </ReduxProvider>
