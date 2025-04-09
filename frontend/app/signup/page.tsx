@@ -60,7 +60,11 @@ export default function SignupForm() {
   const onSubmit = async (data: z.infer<typeof userSchema>) => {
     setIsSubmitting(true);
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, data);
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, data
+        , {
+          withCredentials: true, // ← THIS is mandatory for cookies like connect.sid
+        }
+      );
 
       toast({
         title: "Signup successful!",
