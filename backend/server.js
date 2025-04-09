@@ -26,24 +26,45 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
+// Parse CORS_ORIGIN from .env (comma-separated values)
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
+  : [];
+
 // Define allowed CORS origins
 const allowedOrigins = [
-  process.env.CORS_ORIGIN, // e.g. https://bazzarconnect-frontend.vercel.app
+  ...corsOrigins,
   "http://localhost:3000", // allow local development
+  "https://bazzarconnect-frontend.vercel.app", // explicit fallback
 ];
 
-// CORS middleware
+// Enhanced CORS middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("Blocked by CORS: ", origin);
-        callback(new Error("Not allowed by CORS"));
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Check if origin is allowed
+      const isAllowed = allowedOrigins.some((allowedOrigin) => {
+        if (typeof allowedOrigin === "string") {
+          return origin === allowedOrigin;
+        }
+        if (allowedOrigin instanceof RegExp) {
+          return allowedOrigin.test(origin);
+        }
+        return false;
+      });
+
+      if (isAllowed) {
+        return callback(null, true);
       }
+
+      console.log("Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
+    exposedHeaders: ["set-cookie"],
   })
 );
 app.options("*", cors()); // handle preflight requests
@@ -53,7 +74,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session Configuration
+// Session Configuration - updated for production
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
   resave: false,
@@ -61,9 +82,10 @@ const sessionConfig = {
   cookie: {
     maxAge:
       Number(process.env.SESSION_COOKIE_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
-    sameSite: process.env.SESSION_COOKIE_SAMESITE || "lax",
-    secure: process.env.SESSION_COOKIE_SECURE === "true", // "true" string → boolean
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
+    domain: process.env.NODE_ENV === "production" ? ".vercel.app" : undefined,
   },
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
@@ -104,6 +126,7 @@ app.use((req, res) => {
 // Start server
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Allowed CORS origins: ${allowedOrigins.join(", ")}`);
 });
 
 // Handle unhandled promise rejections
