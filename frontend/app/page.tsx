@@ -1,12 +1,13 @@
-import {Filter} from '../components/filter'
 import { ShopCard } from '@/components/card';
+import { CarouselSpacing } from '@/components/filter';
 
 
 export default function Home() {
   return (
     <>
     <hr />
-    <Filter/>
+    <CarouselSpacing/>
+    <hr />
     <ShopCard/>
     </>
   );
