@@ -11,7 +11,7 @@ const connectDB = require("./config/db");
 const passportConfig = require("./config/passport");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 
-// Routes
+// ROUTES
 const userRoutes = require("./routes/userRoutes");
 const shopRoutes = require("./routes/shopRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -23,29 +23,25 @@ const cartRoutes = require("./routes/cartRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
+// CONNECT TO DB
 connectDB();
 
-// Parse CORS_ORIGIN from .env (comma-separated values)
+// PARSE CORS_ORIGIN 
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
   : [];
 
-// Define allowed CORS origins
 const allowedOrigins = [
   ...corsOrigins,
-  "http://localhost:3000", // allow local development
-  "https://bazzarconnect-frontend.vercel.app", // explicit fallback
+  "http://localhost:3000", 
+  "https://bazzarconnect-frontend.vercel.app", 
 ];
 
-// Enhanced CORS middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      // Check if origin is allowed
       const isAllowed = allowedOrigins.some((allowedOrigin) => {
         if (typeof allowedOrigin === "string") {
           return origin === allowedOrigin;
@@ -67,7 +63,7 @@ app.use(
     exposedHeaders: ["set-cookie"],
   })
 );
-app.options("*", cors()); // handle preflight requests
+app.options("*", cors()); 
 
 // Middleware
 app.use(morgan("dev"));
