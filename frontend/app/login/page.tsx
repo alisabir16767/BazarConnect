@@ -42,7 +42,7 @@ const LoginForm = () => {
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/login` ,data,
         {
-          withCredentials: true, 
+          withCredentials: true, // ← THIS is mandatory for cookies like connect.sid
         }
       );
       console.log(response.data);

@@ -17,12 +17,15 @@ export default function Navbar() {
       })
       .then((res) => {
         console.log("isAuthenticated response:", res.data);
+        console.log("isLoggedIn:", res.data.loggedIn);
         setIsLoggedIn(res.data.loggedIn);
+
       })
       .catch((err) => {
         console.error("Auth check failed:", err);
         setIsLoggedIn(false);
       });
+      console.log("isLoggedIn:", isLoggedIn);
   }, []);
 
   return (

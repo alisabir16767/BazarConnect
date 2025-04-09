@@ -4,6 +4,9 @@ const userController = require("../controllers/userController");
 
 const router = express.Router();
 router.get("/isAuthenticated", (req, res) => {
+  console.log("Session ID:", req.sessionID);
+  console.log("Session object:", req.session);
+  console.log("User:", req.user);
   if (req.isAuthenticated()) {
     return res.status(200).json({ loggedIn: true, user: req.user });
   }
