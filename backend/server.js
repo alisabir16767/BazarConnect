@@ -11,6 +11,7 @@ const connectDB = require("./config/db");
 const passportConfig = require("./config/passport");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 
+// Routes
 const userRoutes = require("./routes/userRoutes");
 const shopRoutes = require("./routes/shopRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -22,33 +23,46 @@ const cartRoutes = require("./routes/cartRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Connect to MongoDB
 connectDB();
 
+// Define allowed CORS origins
 const allowedOrigins = [
-  "http://localhost:3000",
-  "https://bazzarconnect-frontend.vercel.app",
+  process.env.CORS_ORIGIN, // e.g. https://bazzarconnect-frontend.vercel.app
+  "http://localhost:3000", // allow local development
 ];
 
+// CORS middleware
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("Blocked by CORS: ", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+app.options("*", cors()); // handle preflight requests
 
+// Middleware
 app.use(morgan("dev"));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Session Configuration
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production",
+    maxAge:
+      Number(process.env.SESSION_COOKIE_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
+    sameSite: process.env.SESSION_COOKIE_SAMESITE || "lax",
+    secure: process.env.SESSION_COOKIE_SECURE === "true", // "true" string → boolean
     httpOnly: true,
   },
   store: MongoStore.create({
@@ -57,12 +71,15 @@ const sessionConfig = {
   }),
 };
 
+// Use session
 app.use(session(sessionConfig));
 
+// Passport Config
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
 
+// Routes
 app.use("/api/users", userRoutes);
 app.use("/api/shops", shopRoutes);
 app.use("/api/products", productRoutes);
@@ -71,18 +88,25 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/carts", cartRoutes);
 
+// Health check endpoint
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date() });
 });
+
+// Global error handler
 app.use(errorMiddleware);
 
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Endpoint not found" });
 });
+
+// Start server
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
+// Handle unhandled promise rejections
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection:", err);
   server.close(() => process.exit(1));

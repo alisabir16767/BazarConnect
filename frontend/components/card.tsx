@@ -25,6 +25,9 @@ interface Shop {
   images?: string[];
 }
 
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+
 export function ShopCard() {
   const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
