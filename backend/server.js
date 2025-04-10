@@ -27,47 +27,17 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Parse CORS_ORIGIN from .env (comma-separated values)
-const corsOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
-  : [];
-
-// Define allowed CORS origins
-const allowedOrigins = [
-  ...corsOrigins,
-  "http://localhost:3000", // allow local development
-  "https://bazzarconnect-frontend.vercel.app", // explicit fallback
-];
-
-// Enhanced CORS middleware
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      // Check if origin is allowed
-      const isAllowed = allowedOrigins.some((allowedOrigin) => {
-        if (typeof allowedOrigin === "string") {
-          return origin === allowedOrigin;
-        }
-        if (allowedOrigin instanceof RegExp) {
-          return allowedOrigin.test(origin);
-        }
-        return false;
-      });
-
-      if (isAllowed) {
-        return callback(null, true);
-      }
-
-      console.log("Blocked by CORS:", origin);
+const origins = process.env.ORIGINS ? process.env.ORIGINS.split(",") : [];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || origins.includes(origin)) {
+      callback(null, true);
+    } else {
       callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    exposedHeaders: ["set-cookie"],
-  })
-);
-app.options("*", cors()); // handle preflight requests
+    }
+  },
+  credentials: true, // if you're using cookies
+};
 
 // Middleware
 app.use(morgan("dev"));
@@ -126,7 +96,6 @@ app.use((req, res) => {
 // Start server
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`Allowed CORS origins: ${allowedOrigins.join(", ")}`);
 });
 
 // Handle unhandled promise rejections
