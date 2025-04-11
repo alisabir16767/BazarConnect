@@ -40,7 +40,6 @@ const verifyCallback = async (req, email, password, done) => {
   }
 };
 
-// Export function to initialize passport strategies
 module.exports = function (passport) {
   passport.use(new LocalStrategy(customFields, verifyCallback));
 
