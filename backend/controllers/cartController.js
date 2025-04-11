@@ -3,7 +3,7 @@ const User = require("../models/User");
 const Product = require("../models/Product");
 const { asyncWrap, ExpressError } = require("../middleware/errorMiddleware");
 
-// Get all user's cart
+// GET ALL USER'S CART
 exports.getAllCart = asyncWrap(async (req, res, next) => {
   const user = await User.findById(req.params.userId);
   if (!user) return next(new ExpressError(404, "User Not Found"));
@@ -18,7 +18,7 @@ exports.getAllCart = asyncWrap(async (req, res, next) => {
   res.status(200).json(cart);
 });
 
-// Add product to the user's cart
+// ADD PRODUCT TO CART
 exports.addToCart = asyncWrap(async (req, res, next) => {
   const { product_id, quantity } = req.body;
 
@@ -50,10 +50,11 @@ exports.addToCart = asyncWrap(async (req, res, next) => {
 
   cart.last_updated = Date.now();
   await cart.save();
-  res.status(201).json(cart); // 201 status for resource creation
+  res.status(201).json(cart);
+  n;
 });
 
-// Update the cart
+//UPDATE THE CART
 exports.updateCart = asyncWrap(async (req, res, next) => {
   const { product_id, quantity } = req.body;
 
@@ -78,7 +79,7 @@ exports.updateCart = asyncWrap(async (req, res, next) => {
   }
 });
 
-// Remove a product from the user's cart
+// REMOVE PRODUCT FROM CART
 exports.deleteCart = asyncWrap(async (req, res, next) => {
   const { productId } = req.params;
 
