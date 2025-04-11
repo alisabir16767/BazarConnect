@@ -4,43 +4,40 @@ const Shop = require("../models/Shop");
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 const { productSchema } = require("../validation/productValidation");
 
+// CREATE NEW PRODUCT
 exports.createProduct = asyncWrap(async (req, res, next) => {
   const { error, value } = productSchema.validate(req.body);
   if (error) {
-    console.error("Validation Error:", error.details[0].message); // Debugging
+    console.error("Validation Error:", error.details[0].message);
     return next(new ExpressError(400, error.details[0].message));
   }
 
-  // Check if shop_id is a valid ObjectId
   const { shop_id } = req.body;
   if (!mongoose.Types.ObjectId.isValid(shop_id)) {
     return next(new ExpressError(400, "Invalid shop_id format"));
   }
 
-  // Ensure shop exists
   const shop = await Shop.findById(shop_id);
   if (!shop) {
     return next(new ExpressError(404, "Shop not found"));
   }
 
-  // Create and save new product
   const newProduct = new Product(req.body);
   await newProduct.save();
 
-  // Add product to shop's product list
   shop.products.push(newProduct._id);
   await shop.save();
 
   res.status(201).json({ message: "New Product created", product: newProduct });
 });
 
-// Get all products
+// GET ALL PRODUCTS
 exports.getAllProduct = asyncWrap(async (req, res, next) => {
   const products = await Product.find();
   res.status(200).json(products);
 });
 
-// Get a product by ID
+// GET PRODUCT BY ID
 exports.getById = asyncWrap(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) {
@@ -49,7 +46,7 @@ exports.getById = asyncWrap(async (req, res, next) => {
   res.status(200).json(product);
 });
 
-// Get products by shop_id
+// GET PRODUCT BY SHOP ID
 exports.getProductByShopId = asyncWrap(async (req, res, next) => {
   const { shopId } = req.params;
   const shop = await Shop.findById(shopId);
@@ -67,7 +64,7 @@ exports.getProductByShopId = asyncWrap(async (req, res, next) => {
   res.status(200).json(products);
 });
 
-// Update a product
+// UPDATE A PRODUCT
 exports.productUpdate = asyncWrap(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) {
@@ -84,7 +81,7 @@ exports.productUpdate = asyncWrap(async (req, res, next) => {
   res.status(200).json({ message: "Product updated successfully", product });
 });
 
-// Delete a product
+// DELETE A PRODUCT
 exports.deleteProduct = asyncWrap(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) {
