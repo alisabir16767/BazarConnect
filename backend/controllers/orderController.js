@@ -2,7 +2,7 @@ const Order = require("../models/Order");
 const Shop = require("../models/Shop");
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 
-// Create a new order
+// CREATE A NEW ORDER
 exports.createOrder = asyncWrap(async (req, res, next) => {
   const {
     shop_id,
@@ -13,13 +13,11 @@ exports.createOrder = asyncWrap(async (req, res, next) => {
     total_amount,
   } = req.body;
 
-  // Validate Shop existence
   const shop = await Shop.findById(shop_id);
   if (!shop) {
     return next(new ExpressError(404, "Shop not found"));
   }
 
-  // Create and save the order
   const newOrder = new Order({
     shop_id,
     user_id,
@@ -33,7 +31,7 @@ exports.createOrder = asyncWrap(async (req, res, next) => {
   res.status(201).json({ message: "New order created", order: newOrder });
 });
 
-// Get all orders
+// GET ALL ORDERS
 exports.getAllOrder = asyncWrap(async (req, res) => {
   const orders = await Order.find().populate(
     "user_id shop_id products.product_id"
@@ -41,7 +39,7 @@ exports.getAllOrder = asyncWrap(async (req, res) => {
   res.status(200).json(orders);
 });
 
-// Get order by ID
+// GET ORDER BY ID
 exports.getById = asyncWrap(async (req, res, next) => {
   const order = await Order.findById(req.params.orderId).populate(
     "user_id shop_id products.product_id"
@@ -52,7 +50,7 @@ exports.getById = asyncWrap(async (req, res, next) => {
   res.status(200).json(order);
 });
 
-// Update an existing order
+// UPDATE EXISTING ORDER
 exports.updateOrder = asyncWrap(async (req, res, next) => {
   const order = await Order.findByIdAndUpdate(req.params.orderId, req.body, {
     new: true,
@@ -63,7 +61,7 @@ exports.updateOrder = asyncWrap(async (req, res, next) => {
   res.status(200).json({ message: "Order updated successfully", order });
 });
 
-// Delete an order
+// DELETE ORDER
 exports.deleteOrder = asyncWrap(async (req, res, next) => {
   const order = await Order.findById(req.params.orderId);
   if (!order) {
