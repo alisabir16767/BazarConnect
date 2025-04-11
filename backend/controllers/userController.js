@@ -3,7 +3,7 @@ const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 const { validationResult } = require("express-validator");
 const passport = require("passport");
 
-// Create a new user
+// CREATE USER
 exports.createUser = asyncWrap(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -11,8 +11,6 @@ exports.createUser = asyncWrap(async (req, res, next) => {
   }
 
   const { email, username } = req.body;
-
-  // Check for existing user (case insensitive)
   const existingUser = await User.findOne({
     $or: [
       { email: { $regex: new RegExp(`^${email}$`, "i") } },
@@ -27,7 +25,6 @@ exports.createUser = asyncWrap(async (req, res, next) => {
   try {
     const newUser = await User.register(new User(req.body), req.body.password);
 
-    // ✅ Automatically log the user in after registration
     req.login(newUser, (err) => {
       if (err)
         return next(new ExpressError(500, "Login after registration failed"));
@@ -47,7 +44,7 @@ exports.createUser = asyncWrap(async (req, res, next) => {
   }
 });
 
-// Get all users (admin only)
+// GET ALL USERS
 exports.getAllUsers = asyncWrap(async (req, res, next) => {
   // Check if user is admin
   if (req.user.role !== "admin") {
@@ -62,7 +59,7 @@ exports.getAllUsers = asyncWrap(async (req, res, next) => {
   });
 });
 
-// Get user by ID
+// GET USER BY ID
 exports.getUserById = asyncWrap(async (req, res, next) => {
   const user = await User.findById(req.params.userId).select(
     "-hash -salt -loginAttempts"
@@ -72,7 +69,6 @@ exports.getUserById = asyncWrap(async (req, res, next) => {
     return next(new ExpressError(404, "User not found"));
   }
 
-  // Users can only access their own profile unless admin
   if (req.user.role !== "admin" && req.user.id !== req.params.userId) {
     return next(new ExpressError(403, "Unauthorized access"));
   }
@@ -83,7 +79,7 @@ exports.getUserById = asyncWrap(async (req, res, next) => {
   });
 });
 
-// Update user
+// UPDATE USER
 exports.updateUser = asyncWrap(async (req, res, next) => {
   const user = await User.findById(req.params.userId);
 
@@ -91,17 +87,12 @@ exports.updateUser = asyncWrap(async (req, res, next) => {
     return next(new ExpressError(404, "User not found"));
   }
 
-  // Users can only update their own profile unless admin
   if (req.user.role !== "admin" && req.user.id !== req.params.userId) {
     return next(new ExpressError(403, "Unauthorized access"));
   }
-
-  // Prevent role changes unless admin
   if (req.body.role && req.user.role !== "admin") {
     return next(new ExpressError(403, "Only admins can change user roles"));
   }
-
-  // Update fields
   const updatableFields = [
     "name",
     "address",
@@ -133,7 +124,7 @@ exports.updateUser = asyncWrap(async (req, res, next) => {
   });
 });
 
-// Delete user
+// DELETE USER
 exports.deleteUser = asyncWrap(async (req, res, next) => {
   const user = await User.findById(req.params.userId);
 
@@ -141,7 +132,6 @@ exports.deleteUser = asyncWrap(async (req, res, next) => {
     return next(new ExpressError(404, "User not found"));
   }
 
-  // Users can only delete their own account unless admin
   if (req.user.role !== "admin" && req.user.id !== req.params.userId) {
     return next(new ExpressError(403, "Unauthorized access"));
   }
@@ -154,7 +144,6 @@ exports.deleteUser = asyncWrap(async (req, res, next) => {
   });
 });
 
-// Get current user profile
 exports.getCurrentUser = asyncWrap(async (req, res) => {
   const user = await User.findById(req.user.id).select(
     "-hash -salt -loginAttempts"
