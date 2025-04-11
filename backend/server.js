@@ -26,26 +26,23 @@ const PORT = process.env.PORT || 5000;
 // CONNECT TO DB
 connectDB();
 
-// Parse CORS_ORIGIN from .env (comma-separated values)
+// PARSE CORS_ORIGIN
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
   : [];
 
-// Define allowed CORS origins
 const allowedOrigins = [
   ...corsOrigins,
-  "http://localhost:3000", // allow local development
-  "https://bazzarconnect-frontend.vercel.app", // explicit fallback
+  "http://localhost:3000",
+  "https://bazzarconnect-frontend.vercel.app",
 ];
 
-// Enhanced CORS middleware
+// CORS MIDDLEWARE
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      // Check if origin is allowed
       const isAllowed = allowedOrigins.some((allowedOrigin) => {
         if (typeof allowedOrigin === "string") {
           return origin === allowedOrigin;
@@ -67,14 +64,14 @@ app.use(
     exposedHeaders: ["set-cookie"],
   })
 );
-app.options("*", cors()); // handle preflight requests
+app.options("*", cors());
 
-// Middleware
+// MIDDLEWARE
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session Configuration - updated for production
+//SESSION CONFIGURATION
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
   resave: false,
@@ -93,15 +90,15 @@ const sessionConfig = {
   }),
 };
 
-// Use session
+// INITIALIZE SESSION
 app.use(session(sessionConfig));
 
-// Passport Config
+// PASSPORT CONFIGUARATION
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
 
-// Routes
+// ROUTES
 app.use("/api/users", userRoutes);
 app.use("/api/shops", shopRoutes);
 app.use("/api/products", productRoutes);
@@ -110,25 +107,22 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/carts", cartRoutes);
 
-// Health check endpoint
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date() });
 });
 
-// Global error handler
 app.use(errorMiddleware);
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Endpoint not found" });
 });
 
-// Start server
+// START SERVER
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// Handle unhandled promise rejections
+// HANDLE UNHANDLE PROMISES
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection:", err);
   server.close(() => process.exit(1));
