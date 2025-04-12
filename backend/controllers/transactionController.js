@@ -3,20 +3,22 @@ const User = require("../models/User");
 const Order = require("../models/Order");
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 
-// Create new transaction
+// CREATE NEW TRANSACTION
 exports.createTransaction = asyncWrap(async (req, res) => {
   const newTransaction = new Transaction(req.body);
   await newTransaction.save();
   res.status(201).json({ message: "Transaction created successfully" });
 });
-// Get all Transactions
+
+// GET  ALL TRANSACTIONS
 exports.getAllTransaction = asyncWrap(async (req, res) => {
   const transactions = await Transaction.find();
   if (transactions.length === 0)
     return next(new ExpressError(404, "Transaction Not Found"));
   res.status(200).json(transactions);
 });
-// Get transactions by Id
+
+// GET TRANSACTION BY USER ID
 exports.getById = asyncWrap(async (req, res) => {
   const transaction = await Transaction.findById(req.params.transactionId);
   if (!transaction) {
@@ -24,7 +26,8 @@ exports.getById = asyncWrap(async (req, res) => {
   }
   res.status(200).json(transaction);
 });
-// Update existing transaction
+
+// UPDATE EXISTING TRANSACTION
 exports.updateTransaction = asyncWrap(async (req, res) => {
   const transaction = await Transaction.findById(req.params.transactionId);
   if (!transaction) {
@@ -39,7 +42,7 @@ exports.updateTransaction = asyncWrap(async (req, res) => {
   res.status(200).json({ message: "Updated successfully" });
 });
 
-// Delete specific Transaction
+// DELETE TRANSACTION
 exports.deleteTransaction = asyncWrap(async (req, res) => {
   const transaction = await Transaction.findById(req.params.transactionId);
   if (!transaction) {

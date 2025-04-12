@@ -3,7 +3,7 @@ const User = require("../models/User");
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 const { shopSchema } = require("../validation/shopValidation");
 
-// Create a new shop
+// CREATE NEW SHOP
 exports.createShop = asyncWrap(async (req, res, next) => {
   console.log(req.body);
   const { error, value } = shopSchema.validate(req.body);
@@ -15,13 +15,13 @@ exports.createShop = asyncWrap(async (req, res, next) => {
   res.status(201).json({ message: "Shop created successfully", shop: newShop });
 });
 
-// Get all shops
+// GET ALL SHOPS
 exports.getAllShops = asyncWrap(async (req, res, next) => {
   const shops = await Shop.find();
   res.status(200).json(shops);
 });
 
-// Get shop by ID
+// GET SHOP BY ID
 exports.getShopById = asyncWrap(async (req, res, next) => {
   const shop = await Shop.findById(req.params.shopId);
   if (!shop) {
@@ -30,7 +30,7 @@ exports.getShopById = asyncWrap(async (req, res, next) => {
   res.status(200).json(shop);
 });
 
-// Search shop by city
+// SEARCH SHOP BY CITY
 exports.searchByCity = asyncWrap(async (req, res, next) => {
   const { shopCity } = req.params;
   const shops = await Shop.find({ city: shopCity });
@@ -40,7 +40,7 @@ exports.searchByCity = asyncWrap(async (req, res, next) => {
   res.status(200).json(shops);
 });
 
-// Update an existing shop
+// UPDATE SHOP
 exports.updateShop = asyncWrap(async (req, res, next) => {
   const { error, value } = shopSchema.validate(req.body);
   if (error) {
@@ -58,7 +58,7 @@ exports.updateShop = asyncWrap(async (req, res, next) => {
   res.status(200).json({ message: "Shop updated successfully", shop });
 });
 
-// Delete an existing shop
+// DELETE SHOP
 exports.deleteShop = asyncWrap(async (req, res, next) => {
   const shop = await Shop.findById(req.params.shopId);
   if (!shop) {
