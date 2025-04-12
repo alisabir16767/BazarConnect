@@ -46,7 +46,6 @@ exports.createUser = asyncWrap(async (req, res, next) => {
 
 // GET ALL USERS
 exports.getAllUsers = asyncWrap(async (req, res, next) => {
-  // Check if user is admin
   if (req.user.role !== "admin") {
     return next(new ExpressError(403, "Unauthorized access"));
   }
