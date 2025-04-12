@@ -3,7 +3,7 @@ const Product = require("../models/Product");
 const User = require("../models/User");
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 
-// Create a new review
+// CREATE REVIEW
 exports.createReview = asyncWrap(async (req, res) => {
   const { product_id, user_id, rating, comment } = req.body;
   const product = await Product.findById(product_id);
@@ -27,7 +27,7 @@ exports.createReview = asyncWrap(async (req, res) => {
   res.status(201).json({ message: "Successfully created new review" });
 });
 
-// Retrieve all reviews
+// RETRIEVE ALL REVIEWS
 exports.getAllReviews = asyncWrap(async (req, res) => {
   const reviews = await Review.find();
   if (reviews.length === 0) {
@@ -35,7 +35,8 @@ exports.getAllReviews = asyncWrap(async (req, res) => {
   }
   res.status(200).json(reviews);
 });
-// Get review by ID
+
+// GET REVIEW BY PRODUCT ID
 exports.getById = asyncWrap(async (req, res) => {
   const review = await Review.findById(req.params.reviewId);
   if (!review) {
@@ -43,24 +44,23 @@ exports.getById = asyncWrap(async (req, res) => {
   }
   res.status(200).json(review);
 });
-// Update existing review
+
+// UPDATE REVIEW
 exports.reviewUpdate = asyncWrap(async (req, res) => {
   const review = await Review.findById(req.params.reviewId);
   if (!review) {
     return next(new ExpressError(404, "Review Not found"));
   }
-  // Update the review with new data
   for (const key in req.body) {
     if (req.body.hasOwnProperty(key) && key !== "_id") {
       review[key] = req.body[key];
     }
   }
-  // Save the updated review
   await review.save();
   res.status(200).json({ message: "Updated successfully" });
 });
 
-// Delete the review id
+// DELETE REVIEW
 exports.deleteReview = asyncWrap(async (req, res) => {
   const review = await Review.findById(req.params.reviewId);
   if (!review) {
