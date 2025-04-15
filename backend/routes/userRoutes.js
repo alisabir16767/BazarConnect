@@ -9,7 +9,11 @@ router.get("/isAuthenticated", (req, res) => {
   console.log("Session object:", req.session);
   console.log("User:", req.user);
   if (req.isAuthenticated()) {
-    return res.status(200).json({ loggedIn: true, user: req.user });
+    return res.status(200).json({
+      loggedIn: true,
+      user: req.user,
+      sessionID: req.sessionID, // add this
+    });
   }
   return res.status(401).json({ loggedIn: false });
 });
