@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const userController = require("../controllers/userController");
 
-// LOGIN CHEACKER
+// LOGIN CHECKER
 const router = express.Router();
 router.get("/isAuthenticated", (req, res) => {
   console.log("Session ID:", req.sessionID);
