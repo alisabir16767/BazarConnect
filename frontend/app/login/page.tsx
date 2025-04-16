@@ -5,9 +5,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { toast } from "@/hooks/use-toast";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+// Zod Schema
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -40,38 +40,31 @@ const LoginForm = () => {
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
-        data,
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/login` ,data,
         {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          withCredentials: true, // ← THIS is mandatory for cookies like connect.sid
         }
       );
-  
+      console.log(response.data);
+
+      toast({
+        title: "Login Successful",
+        description: "You have successfully logged in",
+      });
+
       if (response.status === 200) {
-        toast({
-          title: "Login Successful",
-          description: "You have successfully logged in",
-        });
         router.push("/");
-        router.refresh();
       }
-    } catch (error: unknown) {
-      const err = error as AxiosError<{ message: string }>;
-  
-      const errorMessage =
-        err.response?.data?.message || "Invalid email or password";
-  
+    } catch (error) {
+      console.error(error);
       toast({
         title: "Login Failed",
-        description: errorMessage,
+        description: "Invalid email or password",
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
+      form.reset();
     }
   };
 
@@ -117,11 +110,6 @@ const LoginForm = () => {
           >
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
-          <div className="text-center mt-4">
-            <Link href="/signup" className="text-sm text-gray-600 hover:text-rose-500">
-              Don&apos;t have an account? Sign up
-            </Link>
-          </div>
         </form>
       </Form>
     </div>
