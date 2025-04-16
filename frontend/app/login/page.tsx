@@ -42,7 +42,7 @@ const LoginForm = () => {
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/login` ,data,
         {
-          withCredentials: true, // ← THIS is mandatory for cookies like connect.sid
+          withCredentials: true, 
         }
       );
       console.log(response.data);
@@ -50,6 +50,7 @@ const LoginForm = () => {
       toast({
         title: "Login Successful",
         description: "You have successfully logged in",
+        variant:"default",
       });
 
       if (response.status === 200) {
