@@ -64,6 +64,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // SESSION CONFIG
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1); // trust first proxy (e.g. Heroku, Vercel)
+}
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
   resave: false,
