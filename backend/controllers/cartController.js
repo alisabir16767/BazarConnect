@@ -1,18 +1,16 @@
 const Cart = require("../models/Cart");
-const User = require("../models/User");
 const Product = require("../models/Product");
 const { asyncWrap, ExpressError } = require("../middleware/errorMiddleware");
 
-// GET ALL USER'S CART
+// GET USER'S CART
 exports.getAllCart = asyncWrap(async (req, res, next) => {
-  const user = await User.findById(req.params.userId);
-  if (!user) return next(new ExpressError(404, "User Not Found"));
+  const userId = req.user._id;
 
-  const cart = await Cart.findOne({ user_id: req.params.userId }).populate(
+  const cart = await Cart.findOne({ user_id: userId }).populate(
     "products.product_id"
   );
   if (!cart) {
-    return next(new ExpressError(404, "Cart Not Found"));
+    return next(new ExpressError(404, "Cart not found"));
   }
 
   res.status(200).json(cart);
@@ -20,6 +18,7 @@ exports.getAllCart = asyncWrap(async (req, res, next) => {
 
 // ADD PRODUCT TO CART
 exports.addToCart = asyncWrap(async (req, res, next) => {
+  const userId = req.user._id;
   const { product_id, quantity } = req.body;
 
   if (!product_id || !quantity) {
@@ -27,13 +26,15 @@ exports.addToCart = asyncWrap(async (req, res, next) => {
   }
 
   const product = await Product.findById(product_id);
-  if (!product) return next(new ExpressError(404, "Product Not Found"));
+  if (!product) {
+    return next(new ExpressError(404, "Product not found"));
+  }
 
-  let cart = await Cart.findOne({ user_id: req.params.userId });
+  let cart = await Cart.findOne({ user_id: userId });
 
   if (!cart) {
     cart = new Cart({
-      user_id: req.params.userId,
+      user_id: userId,
       products: [{ product_id, quantity, price: product.price }],
     });
   } else {
@@ -50,20 +51,23 @@ exports.addToCart = asyncWrap(async (req, res, next) => {
 
   cart.last_updated = Date.now();
   await cart.save();
+
   res.status(201).json(cart);
-  n;
 });
 
-//UPDATE THE CART
+// UPDATE CART (MODIFY QUANTITY)
 exports.updateCart = asyncWrap(async (req, res, next) => {
+  const userId = req.user._id;
   const { product_id, quantity } = req.body;
 
   if (!product_id || quantity == null) {
     return next(new ExpressError(400, "Product ID and quantity are required"));
   }
 
-  const cart = await Cart.findOne({ user_id: req.params.userId });
-  if (!cart) return next(new ExpressError(404, "Cart Not Found"));
+  const cart = await Cart.findOne({ user_id: userId });
+  if (!cart) {
+    return next(new ExpressError(404, "Cart not found"));
+  }
 
   const productIndex = cart.products.findIndex(
     (p) => p.product_id.toString() === product_id
@@ -79,12 +83,15 @@ exports.updateCart = asyncWrap(async (req, res, next) => {
   }
 });
 
-// REMOVE PRODUCT FROM CART
+// DELETE PRODUCT FROM CART
 exports.deleteCart = asyncWrap(async (req, res, next) => {
+  const userId = req.user._id;
   const { productId } = req.params;
 
-  const cart = await Cart.findOne({ user_id: req.params.userId });
-  if (!cart) return next(new ExpressError(404, "Cart not found"));
+  const cart = await Cart.findOne({ user_id: userId });
+  if (!cart) {
+    return next(new ExpressError(404, "Cart not found"));
+  }
 
   const initialLength = cart.products.length;
   cart.products = cart.products.filter(

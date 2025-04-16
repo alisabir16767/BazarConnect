@@ -46,7 +46,12 @@ export default function Navbar() {
           {isLoggedIn === null ? (
             <div className="text-gray-400">Checking auth...</div>
           ) : isLoggedIn ? (
-            <Logout />
+            <>
+              <Link href="/cart" className="text-gray-700 hover:text-rose-500">
+                Cart
+              </Link>
+              <Logout />
+            </>
           ) : (
             <>
               <Link href="/signup" className="text-gray-700 hover:text-rose-500">
@@ -85,9 +90,16 @@ export default function Navbar() {
             {isLoggedIn === null ? (
               <li className="text-gray-400 px-4">Checking auth...</li>
             ) : isLoggedIn ? (
-              <li>
-                <Logout />
-              </li>
+              <>
+                <li>
+                  <Link href="/cart" className="block px-4 py-2 hover:text-rose-500">
+                    Cart
+                  </Link>
+                </li>
+                <li>
+                  <Logout />
+                </li>
+              </>
             ) : (
               <>
                 <li>
