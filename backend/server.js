@@ -52,10 +52,10 @@ app.use(
       callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    exposedHeaders: ["set-cookie"], // ✅ Optional but helpful
+    exposedHeaders: ["set-cookie"],
   })
 );
-app.options("*", cors()); // ✅ Preflight support
+app.options("*", cors());
 
 // MIDDLEWARES
 app.use(cookieParser());
@@ -65,7 +65,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // SESSION CONFIG
 if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1); // trust first proxy (e.g. Heroku, Vercel)
+  app.set("trust proxy", 1);
 }
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
@@ -77,14 +77,13 @@ const sessionConfig = {
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    // Remove domain setting - let browsers handle it
   },
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
     collectionName: "sessions",
-    ttl: 7 * 24 * 60 * 60, // 7 days in seconds
+    ttl: 7 * 24 * 60 * 60,
   }),
-  name: "connect.sid", // Explicitly set session cookie name
+  name: "connect.sid",
 };
 
 // INIT SESSION & PASSPORT
