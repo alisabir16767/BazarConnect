@@ -71,19 +71,22 @@ const sessionConfig = {
   cookie: {
     maxAge:
       Number(process.env.SESSION_COOKIE_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ✅ Needed for cross-site
-    secure: process.env.NODE_ENV === "production", // ✅ Must be true for cross-site in production
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    domain: process.env.NODE_ENV === "production" ? ".vercel.app" : undefined, // ✅ Key for cookies to work with Vercel frontend
+    // Remove domain setting - let browsers handle it
   },
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
     collectionName: "sessions",
+    ttl: 7 * 24 * 60 * 60, // 7 days in seconds
   }),
+  name: "connect.sid", // Explicitly set session cookie name
 };
 
 // INIT SESSION & PASSPORT
 app.use(session(sessionConfig));
+
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
