@@ -1,5 +1,4 @@
 require("dotenv").config();
-const cookieParser = require("cookie-parser");
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -7,6 +6,7 @@ const passport = require("passport");
 const MongoStore = require("connect-mongo");
 const cors = require("cors");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 
 const connectDB = require("./config/db");
 const passportConfig = require("./config/passport");
@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 5000;
 // CONNECT TO DB
 connectDB();
 
-// PARSE CORS_ORIGIN
+// PARSE CORS_ORIGIN ENV VAR
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
   : [];
@@ -35,45 +35,34 @@ const corsOrigins = process.env.CORS_ORIGIN
 const allowedOrigins = [
   ...corsOrigins,
   "http://localhost:3000",
-  "https://bazzarconnect-frontend.vercel.app",
+  "https://bazzarconnect-frontend.vercel.app", // ✅ Your Vercel frontend
 ];
 
-// CORS MIDDLEWARE
+// CORS CONFIG
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
-      const isAllowed = allowedOrigins.some((allowedOrigin) => {
-        if (typeof allowedOrigin === "string") {
-          return origin === allowedOrigin;
-        }
-        if (allowedOrigin instanceof RegExp) {
-          return allowedOrigin.test(origin);
-        }
-        return false;
-      });
+      const isAllowed = allowedOrigins.includes(origin);
+      if (isAllowed) return callback(null, true);
 
-      if (isAllowed) {
-        return callback(null, true);
-      }
-
-      console.log("Blocked by CORS:", origin);
+      console.warn("Blocked by CORS:", origin);
       callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    exposedHeaders: ["set-cookie"],
+    exposedHeaders: ["set-cookie"], // ✅ Optional but helpful
   })
 );
-app.options("*", cors());
+app.options("*", cors()); // ✅ Preflight support
 
-// MIDDLEWARE
+// MIDDLEWARES
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//SESSION CONFIGURATION
+// SESSION CONFIG
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
   resave: false,
@@ -81,10 +70,10 @@ const sessionConfig = {
   cookie: {
     maxAge:
       Number(process.env.SESSION_COOKIE_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ✅ Needed for cross-site
+    secure: process.env.NODE_ENV === "production", // ✅ Must be true for cross-site in production
     httpOnly: true,
-    domain: process.env.NODE_ENV === "production" ? ".vercel.app" : undefined,
+    domain: process.env.NODE_ENV === "production" ? ".vercel.app" : undefined, // ✅ Key for cookies to work with Vercel frontend
   },
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
@@ -92,10 +81,8 @@ const sessionConfig = {
   }),
 };
 
-// INITIALIZE SESSION
+// INIT SESSION & PASSPORT
 app.use(session(sessionConfig));
-
-// PASSPORT CONFIGUARATION
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);
@@ -109,22 +96,25 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/carts", cartRoutes);
 
+// TEST ROUTE
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date() });
 });
 
+// ERROR MIDDLEWARE
 app.use(errorMiddleware);
 
+// 404 HANDLER
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Endpoint not found" });
 });
 
-// START SERVER
+// SERVER START
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// HANDLE UNHANDLE PROMISES
+// HANDLE UNHANDLED PROMISES
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection:", err);
   server.close(() => process.exit(1));
