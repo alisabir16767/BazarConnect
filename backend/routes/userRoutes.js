@@ -12,7 +12,7 @@ router.get("/isAuthenticated", (req, res) => {
     return res.status(200).json({
       loggedIn: true,
       user: req.user,
-      sessionID: req.sessionID, // add this
+      sessionID: req.sessionID,
     });
   }
   return res.status(401).json({ loggedIn: false });
