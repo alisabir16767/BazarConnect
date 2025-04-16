@@ -8,7 +8,8 @@ import axios from "axios";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     axios
@@ -17,18 +18,14 @@ export default function Navbar() {
       })
       .then((res) => {
         console.log("isAuthenticated response:", res.data);
-        console.log("isLoggedIn:", res.data.loggedIn);
         setIsLoggedIn(res.data.loggedIn);
-
       })
       .catch((err) => {
         console.error("Auth check failed:", err);
         setIsLoggedIn(false);
+        setError("Auth check failed");
       });
-      console.log("isLoggedIn:", isLoggedIn);
   }, []);
-
-
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b shadow-sm">
@@ -46,7 +43,9 @@ export default function Navbar() {
             Add Your Shop
           </Link>
 
-          {isLoggedIn === null ? null : isLoggedIn ? (
+          {isLoggedIn === null ? (
+            <div className="text-gray-400">Checking auth...</div>
+          ) : isLoggedIn ? (
             <Logout />
           ) : (
             <>
@@ -83,7 +82,9 @@ export default function Navbar() {
               </Link>
             </li>
 
-            {isLoggedIn === null ? null : isLoggedIn ? (
+            {isLoggedIn === null ? (
+              <li className="text-gray-400 px-4">Checking auth...</li>
+            ) : isLoggedIn ? (
               <li>
                 <Logout />
               </li>
@@ -102,6 +103,12 @@ export default function Navbar() {
               </>
             )}
           </ul>
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-100 text-red-700 text-center py-2 text-sm">
+          {error}
         </div>
       )}
     </nav>
