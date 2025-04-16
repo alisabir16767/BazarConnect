@@ -4,7 +4,6 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,18 +21,22 @@ interface Shop {
   state: string;
   country: string;
   description: string;
+  category?: string;
   images?: string[];
+}
+
+interface ShopCardProps {
+  filter: string; // "all", "electronics", "fashion", etc.
 }
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-export function ShopCard() {
+export function ShopCard({ filter }: ShopCardProps) {
   const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handleVisitStore = (shopId: string) => {
     router.push(`/shop/${shopId}/products`);
@@ -42,9 +45,7 @@ export function ShopCard() {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/shops`
-        );
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/shops`);
         if (Array.isArray(res.data)) {
           setShops(res.data);
         } else {
@@ -61,17 +62,28 @@ export function ShopCard() {
     fetchShops();
   }, []);
 
+  const filteredShops =
+    filter === "all"
+      ? shops
+      : shops.filter((shop) =>
+          shop.category?.toLowerCase() === filter.toLowerCase()
+        );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-{loading && (
-  <div className="flex justify-center items-center h-40">
-    <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500 border-solid"></div>
-    <p className="ml-3 text-lg text-gray-600 font-semibold">Loading shops...</p>
-  </div>
-)}
-      {!loading && error && <p className="text-red-500">{error}</p>}
+      {loading && (
+        <div className="flex justify-center items-center h-40 col-span-full">
+          <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500 border-solid"></div>
+          <p className="ml-3 text-lg text-gray-600 font-semibold">Loading shops...</p>
+        </div>
+      )}
+      {!loading && error && <p className="text-red-500 col-span-full">{error}</p>}
 
-      {shops.map((shop) => (
+      {!loading && !error && filteredShops.length === 0 && (
+        <p className="col-span-full text-center text-gray-500">No shops found in this category.</p>
+      )}
+
+      {filteredShops.map((shop) => (
         <Card key={shop._id} className="w-[330px] shadow-lg">
           <CardHeader>
             <CardTitle>{shop.name}</CardTitle>
@@ -82,9 +94,9 @@ export function ShopCard() {
           <CardContent>
             <img
               className="h-48 w-full object-cover rounded-lg"
-              src={shop.images?.[0] || "/placeholder.jpg"} 
+              src={shop.images?.[0] || "/placeholder.jpg"}
               alt={shop.name}
-              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")} // ✅ Falon error
+              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
             />
             <CardDescription>{shop.description}</CardDescription>
           </CardContent>
