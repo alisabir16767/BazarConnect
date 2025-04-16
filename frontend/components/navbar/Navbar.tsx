@@ -3,32 +3,56 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import SearchBox from "../SearchBox";
-import Logout from "../Logout";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
-export default function Navbar() {
+const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const router = useRouter();
 
+  // Check authentication status
   useEffect(() => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/users/isAuthenticated`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        console.log("isAuthenticated response:", res.data);
-        console.log("isLoggedIn:", res.data.loggedIn);
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/isAuthenticated`,
+          { withCredentials: true }
+        );
         setIsLoggedIn(res.data.loggedIn);
-
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Auth check failed:", err);
         setIsLoggedIn(false);
-      });
-      console.log("isLoggedIn:", isLoggedIn);
+      }
+    };
+    checkAuth();
   }, []);
 
-
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/logout`,
+        {},
+        { withCredentials: true }
+      );
+      setIsLoggedIn(false);
+      router.push("/");
+      router.refresh();
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out",
+      });
+    } catch (err) {
+      console.error("Logout failed:", err);
+      toast({
+        title: "Logout failed",
+        description: "Could not log out properly",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b shadow-sm">
@@ -47,7 +71,12 @@ export default function Navbar() {
           </Link>
 
           {isLoggedIn === null ? null : isLoggedIn ? (
-            <Logout />
+            <button
+              onClick={handleLogout}
+              className="text-gray-700 hover:text-rose-500"
+            >
+              Logout
+            </button>
           ) : (
             <>
               <Link href="/signup" className="text-gray-700 hover:text-rose-500">
@@ -85,7 +114,12 @@ export default function Navbar() {
 
             {isLoggedIn === null ? null : isLoggedIn ? (
               <li>
-                <Logout />
+                <button
+                  onClick={handleLogout}
+                  className="block px-4 py-2 hover:text-rose-500 w-full text-left"
+                >
+                  Logout
+                </button>
               </li>
             ) : (
               <>
@@ -106,4 +140,6 @@ export default function Navbar() {
       )}
     </nav>
   );
-}
+};
+
+export default Navbar;
