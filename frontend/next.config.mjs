@@ -24,7 +24,7 @@ const nextConfig = {
           },
           {
             key: "Access-Control-Allow-Origin",
-            value: "https://bazzarconnect-backend.onrender.com", // your backend URL
+            value: "https://bazarconnect.onrender.com", // your backend URL
           },
           {
             key: "Access-Control-Allow-Methods",
