@@ -24,10 +24,26 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 });
 
 // LOGOUT ROUTE
+// LOGOUT ROUTE
 router.get("/logout", (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);
-    res.status(200).json({ message: "Logged out successfully" });
+
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session destroy error:", err);
+        return res.status(500).json({ message: "Logout failed" });
+      }
+
+      res.clearCookie("connect.sid", {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+
+      return res.status(200).json({ message: "Logged out successfully" });
+    });
   });
 });
 
