@@ -13,12 +13,14 @@ const Logout = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      await axios.get("/api/logout"); 
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/logout`, {
+        withCredentials: true,
+      });
       toast({
         title: "Logged out",
         description: "You have successfully logged out.",
       });
-      router.push("/login"); 
+      router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
       toast({
