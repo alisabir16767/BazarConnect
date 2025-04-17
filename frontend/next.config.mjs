@@ -4,7 +4,11 @@ const nextConfig = {
 
   // Allow images from specific domains
   images: {
-    domains: ["res.cloudinary.com", "images.unsplash.com"],
+    domains: [
+      "res.cloudinary.com",
+      "images.unsplash.com",
+      "images.unsplash.com",
+    ],
   },
 
   // Pass environment variables to the client

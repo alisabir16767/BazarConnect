@@ -8,6 +8,7 @@ import { RootState, AppDispatch } from "../../../redux/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { CarouselPlugin } from "@/components/shopSlide";
 
 export default function ShopProductsPage() {
   const { shopId } = useParams();
@@ -43,6 +44,8 @@ export default function ShopProductsPage() {
             <p className="text-sm text-gray-500">Owner: {shop.owner_id}</p>
           </div>
         )}
+            <CarouselPlugin/>
+            <hr />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {products.map((product) => (
