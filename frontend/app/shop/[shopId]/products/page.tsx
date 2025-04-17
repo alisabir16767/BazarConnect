@@ -6,12 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchShopAndProducts } from "../../../redux/slices/shopSlice"; 
 import { RootState, AppDispatch } from "../../../redux/store"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function ShopProductsPage() {
   const { shopId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  
-  const { shop, products, loading, error } = useSelector((state: RootState) => state.shop);
+  const { shop, products, loading, error } = useSelector(
+    (state: RootState) => state.shop
+  );
 
   useEffect(() => {
     if (typeof shopId === "string") {
@@ -25,9 +28,12 @@ export default function ShopProductsPage() {
         {loading && (
           <div className="flex justify-center items-center h-40">
             <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500 border-solid"></div>
-            <p className="ml-3 text-lg text-gray-600 font-semibold">Loading Products...</p>
+            <p className="ml-3 text-lg text-gray-600 font-semibold">
+              Loading Products...
+            </p>
           </div>
         )}
+
         {error && <p className="text-red-500">{error}</p>}
 
         {shop && (
@@ -40,21 +46,29 @@ export default function ShopProductsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {products.map((product) => (
-            <Card key={product._id} className="w-[300px]">
-              <CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <img
-                  className="h-40 w-full object-cover rounded-lg"
-                  src={product.images?.[0] || "https://via.placeholder.com/150"}
-                  alt={product.name}
-                />
-                <p className="text-gray-700">{product.description}</p>
-                <p className="text-lg font-bold">${product.price}</p>
-                <p className="text-sm text-gray-500">Category: {product.category}</p>
-              </CardContent>
-            </Card>
+            <Link key={product._id} href={`/product/${product._id}`}>
+              <Card className="w-[300px] cursor-pointer hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle>{product.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <img
+                    className="h-40 w-full object-cover rounded-lg"
+                    src={product.images?.[0] || "https://via.placeholder.com/150"}
+                    alt={product.name}
+                  />
+                  <p className="text-gray-700">{product.description}</p>
+                  <p className="text-lg font-bold">${product.price}</p>
+                  <p className="text-sm text-gray-500">Category: {product.category}</p>
+                  <Button
+              
+            >
+              Add to Cart
+            </Button>
+                </CardContent>
+              </Card>
+            </Link>
+           
           ))}
         </div>
       </div>
