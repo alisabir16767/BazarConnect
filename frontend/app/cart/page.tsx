@@ -26,7 +26,7 @@ const initialCart: CartItem[] = [
     name: 'Stylish Jacket',
     price: 99.99,
     quantity: 2,
-    image: 'https://unsplash.com/photos/a-young-boy-wearing-a-black-leather-jacket-hTiM8Ba0E_U',
+    image: 'https://plus.unsplash.com/premium_photo-1683141202259-ee13ddd953fc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fFN0eWxpc2glMjBKYWNrZXR8ZW58MHx8MHx8fDA%3D',
   },
 ];
 

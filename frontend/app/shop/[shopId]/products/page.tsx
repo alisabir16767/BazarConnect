@@ -52,6 +52,8 @@ export default function ShopProductsPage() {
                   <CardTitle>{product.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
+                     
+                   
                   <img
                     className="h-40 w-full object-cover rounded-lg"
                     src={product.images?.[0] || "https://via.placeholder.com/150"}
