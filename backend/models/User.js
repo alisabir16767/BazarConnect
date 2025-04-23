@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
 const validator = require("validator");
 
+// USER SCHEMA
 const userSchema = new mongoose.Schema(
   {
     username: {
