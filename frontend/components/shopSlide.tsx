@@ -12,7 +12,10 @@ import {
 } from "@/components/ui/carousel";
 
 // Sample image URLs
+ 
 const images = [
+
+   
    "https://images.unsplash.com/photo-1603279357898-30ea49adcad8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDQ3fHx8ZW58MHx8fHx8",
    "https://images.unsplash.com/photo-1659614002067-b35ae837c19f?q=80&w=1474&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1692188669857-9607ba467e9c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNob3AlMjBpbWFnZXN8ZW58MHx8MHx8fDA%3D",

@@ -26,9 +26,11 @@ export default function Navbar() {
         setError("Auth check failed");
       });
   }, []);
+   
+   
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b shadow-sm ">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b shadow-sm">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <Link href="/" className="text-xl font-bold text-rose-500">
           BazzarConnect
@@ -75,7 +77,7 @@ export default function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t p-4">
+        <div className="md:hidden fixed top-[60px] left-0 w-full h-[calc(100vh-60px)] bg-white border-t p-4 overflow-y-auto z-40">
           <div className="mb-4">
             <SearchBox />
           </div>
