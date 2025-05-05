@@ -9,5 +9,6 @@ router.get("/search/:shopCity", shopController.searchByCity);
 router.get("/:shopId", shopController.getShopById);
 router.put("/:shopId", shopController.updateShop);
 router.delete("/:shopId", shopController.deleteShop);
+router.get("/:shopId/products", shopController.getProductsByShopId);
 
 module.exports = router;

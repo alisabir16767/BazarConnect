@@ -1,82 +1,51 @@
-"use client";
+// app/shop/[shopId]/products/page.tsx
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchShopAndProducts } from "../../../redux/slices/shopSlice"; 
-import { RootState, AppDispatch } from "../../../redux/store"; 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { CarouselPlugin } from "@/components/shopSlide";
+import Link from 'next/link';
 
-export default function ShopProductsPage() {
-  const { shopId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-  const { shop, products, loading, error } = useSelector(
-    (state: RootState) => state.shop
-  );
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+}
 
-  useEffect(() => {
-    if (typeof shopId === "string") {
-      dispatch(fetchShopAndProducts(shopId));
-    }
-  }, [dispatch, shopId]);
+async function fetchProducts(shopId: string): Promise<Product[]> {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shops/${shopId}/products`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error('Failed to fetch products');
+    return await res.json();
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+}
+
+export default async function ProductsPage({ params }: { params: { shopId: string } }) {
+  const products = await fetchProducts(params.shopId);
 
   return (
-    <>
-      <div className="container mx-auto p-4">
-        {loading && (
-          <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500 border-solid"></div>
-            <p className="ml-3 text-lg text-gray-600 font-semibold">
-              Loading Products...
-            </p>
-          </div>
-        )}
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Products for Shop ID: {params.shopId}</h1>
 
-        {error && <p className="text-red-500">{error}</p>}
-
-        {shop && (
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold">{shop.name}</h1>
-            <p className="text-gray-600">{shop.description}</p>
-            <p className="text-sm text-gray-500">Owner: {shop.owner_id}</p>
-          </div>
-        )}
-            <CarouselPlugin/>
-            <hr />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {products.length === 0 ? (
+        <p>No products found for this shop.</p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           {products.map((product) => (
-            <Link key={product._id} href={`/product/${product._id}`}>
-              <Card className="w-[300px] cursor-pointer hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle>{product.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                     
-                   
-                  <img
-                    className="h-40 w-full object-cover rounded-lg"
-                    src={product.images?.[0] || "https://via.placeholder.com/150"}
-                    alt={product.name}
-                  />
-                  <p className="text-gray-700">{product.description}</p>
-                  <p className="text-lg font-bold">${product.price}</p>
-                  <p className="text-sm text-gray-500">Category: {product.category}</p>
-                  <Button
-              
+            <Link
+              key={product._id}
+              href={`/showProduct/${product._id}`}
+              className="border p-4 rounded-md shadow hover:shadow-lg transition"
             >
-              Add to Cart
-            </Button>
-                </CardContent>
-              </Card>
+              <h2 className="text-lg font-semibold">{product.name}</h2>
+              <p className="text-sm text-gray-600">{product.description}</p>
+              <p className="mt-2 font-bold">${product.price}</p>
             </Link>
-           
           ))}
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
