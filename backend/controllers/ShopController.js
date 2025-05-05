@@ -1,5 +1,6 @@
 const Shop = require("../models/Shop");
 const User = require("../models/User");
+const Product = require("../models/Product"); // ✅ You missed this import
 const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
 const { shopSchema } = require("../validation/shopValidation");
 
@@ -39,23 +40,27 @@ exports.searchByCity = asyncWrap(async (req, res, next) => {
   }
   res.status(200).json(shops);
 });
-exports.getProductsByShopId = async (req, res) => {
-  try {
-    const { shopId } = req.params;
-    const products = await Product.find({ shopId: shopId });
 
-    if (!products || products.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No products found for this shop." });
-    }
+// ✅ FIXED: GET PRODUCTS BY SHOP ID
+exports.getProductsByShopId = asyncWrap(async (req, res, next) => {
+  const { shopId } = req.params;
+  const shop = await Shop.findById(shopId);
 
-    res.status(200).json(products);
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({ message: "Failed to fetch products." });
+  if (!shop) {
+    return next(new ExpressError(404, "Shop not found"));
   }
-};
+
+  // Now get all products using the shop.products array (which has product IDs)
+  const products = await Product.find({ _id: { $in: shop.products } });
+
+  if (products.length === 0) {
+    return res
+      .status(404)
+      .json({ message: "No products found for this shop." });
+  }
+
+  res.status(200).json(products);
+});
 
 // UPDATE SHOP
 exports.updateShop = asyncWrap(async (req, res, next) => {
