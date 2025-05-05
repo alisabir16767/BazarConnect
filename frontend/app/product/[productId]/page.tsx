@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button"; // Assuming Button component is created
 
 interface Product {
   _id: string;
@@ -31,6 +32,8 @@ export default async function ProductPage({ params }: { params: { productId: str
   if (!product) {
     notFound(); // 👈 uses Next.js built-in 404 page
   }
+
+ 
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -71,7 +74,15 @@ export default async function ProductPage({ params }: { params: { productId: str
             </div>
           </div>
 
-          {/* Future: Add to Cart, Ratings, etc. */}
+          {/* Buttons */}
+          <div className="flex gap-4 mt-6">
+            <Button className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700">
+              Add to Cart
+            </Button>
+            <Button className="w-full sm:w-auto bg-green-600 text-white hover:bg-green-700">
+              Buy Now
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
