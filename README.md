@@ -95,8 +95,6 @@ RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 ### **Backend Deployment (Render/Heroku)**
 
 ```sh
-  git push heroku main  # For Heroku
-  # OR
   git push origin main   # If using Render or another platform
 ```
 
