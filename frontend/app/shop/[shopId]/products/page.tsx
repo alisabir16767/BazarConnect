@@ -5,7 +5,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  images: string[]; // 👈 correct type
+  images: string[]; 
 }
 
 async function fetchProducts(shopId: string): Promise<Product[]> {

@@ -92,12 +92,17 @@ export function ShopCard({ filter }: ShopCardProps) {
             </p>
           </CardHeader>
           <CardContent>
-            <img
-              className="h-48 w-full object-cover rounded-lg"
-              src={shop.images?.[0] || "/placeholder.jpg"}
-              alt={shop.name}
-              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
-            />
+          <img
+  className="h-48 w-full object-cover rounded-lg"
+  src={shop.images?.[0] || "https://via.placeholder.com/300"}
+  alt={shop.name || "Shop Image"}
+  onError={(e) => {
+    if (e.currentTarget.src !== "https://via.placeholder.com/300") {
+      e.currentTarget.src = "https://via.placeholder.com/300";
+    }
+  }}
+/>
+
             <CardDescription>{shop.description}</CardDescription>
           </CardContent>
           <CardFooter className="flex justify-between">
