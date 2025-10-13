@@ -8,7 +8,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 
-const connectDB = require("./config/db");
+const connectDB = require("./config/DB/db");
 const passportConfig = require("./config/passport");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 
