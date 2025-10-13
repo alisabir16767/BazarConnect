@@ -1,6 +1,6 @@
-const Order = require("../models/Order");
-const Shop = require("../models/Shop");
-const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
+import Order from "../models/Order";
+import Shop from "../models/Shop";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
 
 // CREATE A NEW ORDER
 exports.createOrder = asyncWrap(async (req, res, next) => {

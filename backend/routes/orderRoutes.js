@@ -1,5 +1,5 @@
-const express = require("express");
-const orderController = require("../controllers/orderController");
+import express from "express";
+import orderController from "../controllers/orderController.js";
 const router = express.Router();
 
 // Routes for order operations

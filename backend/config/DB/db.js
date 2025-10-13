@@ -1,5 +1,5 @@
-require("dotenv").config();
-
+import dotenv from "dotenv";
+dotenv.config();
 const mongoose = require("mongoose");
 console.log("MONGO_URI:", process.env.MONGO_URI);
 
@@ -12,7 +12,7 @@ const connectDB = async () => {
     console.log("Database connected successfully");
   } catch (err) {
     console.error("Database connection error:", err.message);
-    process.exit(1); 
+    process.exit(1);
   }
 };
 

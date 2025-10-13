@@ -1,7 +1,6 @@
-const express = require("express");
-// Make sure this path is correct
-const cartController = require("../controllers/cartController");
-const { ensureAuthenticated } = require("../middleware/authMiddleware");
+import express from "express";
+import cartController from "../controllers/cartController.js";
+import { ensureAuthenticated } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 console.log("Controller functions:", Object.keys(cartController));

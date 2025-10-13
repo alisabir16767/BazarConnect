@@ -1,7 +1,7 @@
-const Review = require("../models/Review");
-const Product = require("../models/Product");
-const User = require("../models/User");
-const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
+import Review from "../models/Review";
+import Product from "../models/Product";
+import User from "../models/User";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
 
 // CREATE REVIEW
 exports.createReview = asyncWrap(async (req, res) => {

@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { ExpressError } = require('./errorMiddleware');
+import Joi from "joi";
+import { ExpressError } from "./errorMiddleware";
 
 // Generic validation middleware function
 const validateSchema = (schema) => {

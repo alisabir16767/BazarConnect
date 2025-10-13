@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
-const validator = require("validator");
+import mongoose from "mongoose";
+import passportLocalMongoose from "passport-local-mongoose";
+import validator from "validator";
 
 // USER SCHEMA
 const userSchema = new mongoose.Schema(

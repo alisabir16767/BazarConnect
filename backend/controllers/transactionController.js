@@ -1,7 +1,7 @@
-const Transaction = require("../models/Transaction");
-const User = require("../models/User");
-const Order = require("../models/Order");
-const { ExpressError, asyncWrap } = require("../middleware/errorMiddleware");
+import Transaction from "../models/Transaction";
+import User from "../models/User";
+import Order from "../models/Order";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
 
 // CREATE NEW TRANSACTION
 exports.createTransaction = asyncWrap(async (req, res) => {

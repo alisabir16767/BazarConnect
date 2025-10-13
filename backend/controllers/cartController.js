@@ -1,6 +1,6 @@
-const Cart = require("../models/Cart");
-const Product = require("../models/Product");
-const { asyncWrap, ExpressError } = require("../middleware/errorMiddleware");
+import Cart from "../models/Cart";
+import Product from "../models/Product";
+import { asyncWrap, ExpressError } from "../middleware/errorMiddleware";
 
 exports.getAllCart = asyncWrap(async (req, res, next) => {
   const userId = req.user._id;
