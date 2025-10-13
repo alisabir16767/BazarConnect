@@ -1,4 +1,3 @@
-import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import User from "../models/User.js";
 
@@ -40,7 +39,7 @@ const verifyCallback = async (req, email, password, done) => {
   }
 };
 
-module.exports = function (passport) {
+export default function (passport) {
   passport.use(new LocalStrategy(customFields, verifyCallback));
 
   passport.serializeUser((user, done) => {
@@ -55,4 +54,4 @@ module.exports = function (passport) {
       done(err);
     }
   });
-};
+}

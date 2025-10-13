@@ -1,10 +1,18 @@
 import express from "express";
 import passport from "passport";
-import userController from "../controllers/userController.js";
-import User from "../models/User.js";
+import {
+  createUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+} from "../controllers/userController.js"; // Named imports
+
+import { ensureAuthenticated } from "../middleware/authMiddleware.js"; // optional middleware
+
+const router = express.Router();
 
 // LOGIN CHECKER
-const router = express.Router();
 router.get("/isAuthenticated", (req, res) => {
   console.log("Session ID:", req.sessionID);
   console.log("Session object:", req.session);
@@ -19,7 +27,7 @@ router.get("/isAuthenticated", (req, res) => {
   return res.status(401).json({ loggedIn: false });
 });
 
-//LOGIN ROUTE
+// LOGIN ROUTE
 router.post("/login", passport.authenticate("local"), (req, res) => {
   res.status(200).json({ message: "Logged in successfully", user: req.user });
 });
@@ -32,10 +40,11 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
-router.post("/", userController.createUser);
-router.get("/", userController.getAllUsers);
-router.get("/:userId", userController.getUserById);
-router.put("/:userId", userController.updateUser);
-router.delete("/:userId", userController.deleteUser);
+// USER ROUTES
+router.post("/", createUser);
+router.get("/", getAllUsers);
+router.get("/:userId", getUserById);
+router.put("/:userId", updateUser);
+router.delete("/:userId", deleteUser);
 
-module.exports = router;
+export default router;

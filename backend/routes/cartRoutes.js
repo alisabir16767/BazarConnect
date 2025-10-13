@@ -1,17 +1,16 @@
 import express from "express";
-import cartController from "../controllers/cartController.js";
 import { ensureAuthenticated } from "../middleware/authMiddleware.js";
 const router = express.Router();
+import {
+  getAllCart,
+  addToCart,
+  updateCart,
+  deleteCart,
+} from "../controllers/cartController.js";
 
-console.log("Controller functions:", Object.keys(cartController));
+router.get("/cart", getAllCart);
+router.post("/add", addToCart);
+router.put("/update", updateCart);
+router.delete("/remove/:productId", deleteCart);
 
-router.get("/cart", ensureAuthenticated, cartController.getAllCart);
-router.post("/add", ensureAuthenticated, cartController.addToCart);
-router.put("/update", ensureAuthenticated, cartController.updateCart);
-router.delete(
-  "/remove/:productId",
-  ensureAuthenticated,
-  cartController.deleteCart
-);
-
-module.exports = router;
+export default router;

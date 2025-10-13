@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import cloudinary from "../../configs/FS/cloudinary.js";
+import cloudinary from "../../config/FS/cloudnary.js";
 
 /**
  * Uploads an image buffer to Cloudinary.

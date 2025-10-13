@@ -44,4 +44,4 @@ reviewSchema.pre("save", function (next) {
 
 const Review = mongoose.model("Review", reviewSchema);
 
-module.exports = Review;
+export default Review;

@@ -1,26 +1,23 @@
-class ExpressError extends Error {
-   constructor(status, message) {
-      super(message);
-      this.status = status;
-   }
+// Custom Error Class
+export class ExpressError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
 }
 
-const errorMiddleware = (err, req, res, next) => {
-   const statusCode = err.status || 500;
-   res.status(statusCode).json({
-      message: err.message,
-      stack: process.env.NODE_ENV === 'production' ? null : err.stack
-   });
+// Async wrapper for controllers
+export const asyncWrap = (fn) => {
+  return function (req, res, next) {
+    fn(req, res, next).catch(next);
+  };
 };
 
-function asyncWrap(fn) {
-   return function (req, res, next) {
-      fn(req, res, next).catch(next);
-   };
-}
-
-module.exports = {
-   ExpressError,
-   errorMiddleware,
-   asyncWrap
+// Error handling middleware
+export const errorMiddleware = (err, req, res, next) => {
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
+    message: err.message,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
+  });
 };

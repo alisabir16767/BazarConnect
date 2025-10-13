@@ -1,17 +1,17 @@
-import Transaction from "../models/Transaction";
-import User from "../models/User";
-import Order from "../models/Order";
-import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
+import Transaction from "../models/Transaction.js";
+import User from "../models/User.js";
+import Order from "../models/Order.js";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware.js";
 
 // CREATE NEW TRANSACTION
-exports.createTransaction = asyncWrap(async (req, res) => {
+export const createTransaction = asyncWrap(async (req, res) => {
   const newTransaction = new Transaction(req.body);
   await newTransaction.save();
   res.status(201).json({ message: "Transaction created successfully" });
 });
 
 // GET  ALL TRANSACTIONS
-exports.getAllTransaction = asyncWrap(async (req, res) => {
+export const getAllTransaction = asyncWrap(async (req, res) => {
   const transactions = await Transaction.find();
   if (transactions.length === 0)
     return next(new ExpressError(404, "Transaction Not Found"));
@@ -19,7 +19,7 @@ exports.getAllTransaction = asyncWrap(async (req, res) => {
 });
 
 // GET TRANSACTION BY USER ID
-exports.getById = asyncWrap(async (req, res) => {
+export const getById = asyncWrap(async (req, res) => {
   const transaction = await Transaction.findById(req.params.transactionId);
   if (!transaction) {
     return next(new ExpressError(404, "Transaction Not Found"));
@@ -28,7 +28,7 @@ exports.getById = asyncWrap(async (req, res) => {
 });
 
 // UPDATE EXISTING TRANSACTION
-exports.updateTransaction = asyncWrap(async (req, res) => {
+export const updateTransaction = asyncWrap(async (req, res) => {
   const transaction = await Transaction.findById(req.params.transactionId);
   if (!transaction) {
     return next(new ExpressError(404, "Transaction Not Found"));
@@ -43,7 +43,7 @@ exports.updateTransaction = asyncWrap(async (req, res) => {
 });
 
 // DELETE TRANSACTION
-exports.deleteTransaction = asyncWrap(async (req, res) => {
+export const deleteTransaction = asyncWrap(async (req, res) => {
   const transaction = await Transaction.findById(req.params.transactionId);
   if (!transaction) {
     return next(new ExpressError(404, "Transaction Not Found"));

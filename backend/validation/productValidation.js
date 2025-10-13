@@ -1,8 +1,8 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const objectIdPattern = /^[0-9a-fA-F]{24}$/;
 
-const productSchema = Joi.object({
+export const productSchema = Joi.object({
   shop_id: Joi.string()
     .pattern(objectIdPattern)
     .required()
@@ -21,5 +21,3 @@ const productSchema = Joi.object({
   created_at: Joi.date().default(() => new Date()),
   updated_at: Joi.date().default(() => new Date()),
 }).required();
-
-module.exports = { productSchema };

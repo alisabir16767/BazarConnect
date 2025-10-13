@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import sharp from "sharp";
-import Product from "../models/Product";
-import Shop from "../models/Shop";
-import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
-import { productSchema } from "../validation/productValidation";
-import { uploadBufferToCloudinary } from "../utils/cloudinary/uploadBufferToCloudinary";
+import Product from "../models/Product.js";
+import Shop from "../models/Shop.js";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware.js";
+import { productSchema } from "../validation/productValidation.js";
+import { uploadBufferToCloudinary } from "../utils/cloudnary/uploadToCloudinary.js";
 
 // CREATE NEW PRODUCT (with image upload)
-exports.createProduct = asyncWrap(async (req, res, next) => {
+export const createProduct = asyncWrap(async (req, res, next) => {
   const { error, value } = productSchema.validate(req.body);
   if (error) return next(new ExpressError(400, error.details[0].message));
 
@@ -57,20 +57,20 @@ exports.createProduct = asyncWrap(async (req, res, next) => {
 });
 
 //  GET ALL PRODUCTS
-exports.getAllProduct = asyncWrap(async (req, res) => {
+export const getAllProduct = asyncWrap(async (req, res) => {
   const products = await Product.find();
   res.status(200).json(products);
 });
 
 //  GET PRODUCT BY ID
-exports.getById = asyncWrap(async (req, res, next) => {
+export const getById = asyncWrap(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) return next(new ExpressError(404, "Product not found"));
   res.status(200).json(product);
 });
 
 //  GET PRODUCTS BY SHOP ID
-exports.getProductByShopId = asyncWrap(async (req, res, next) => {
+export const getProductByShopId = asyncWrap(async (req, res, next) => {
   const { shopId } = req.params;
   const shop = await Shop.findById(shopId);
   if (!shop) return res.status(404).json({ message: "Shop not found" });
@@ -85,7 +85,7 @@ exports.getProductByShopId = asyncWrap(async (req, res, next) => {
 });
 
 //  UPDATE PRODUCT (with optional new image uploads)
-exports.productUpdate = asyncWrap(async (req, res, next) => {
+export const productUpdate = asyncWrap(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) return next(new ExpressError(404, "Product Not Found"));
 
@@ -123,7 +123,7 @@ exports.productUpdate = asyncWrap(async (req, res, next) => {
 });
 
 //  DELETE PRODUCT
-exports.deleteProduct = asyncWrap(async (req, res, next) => {
+export const deleteProduct = asyncWrap(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) return next(new ExpressError(404, "Product Not Found"));
 

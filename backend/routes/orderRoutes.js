@@ -1,12 +1,18 @@
 import express from "express";
-import orderController from "../controllers/orderController.js";
 const router = express.Router();
+import {
+  createOrder,
+  getAllOrder,
+  getById,
+  updateOrder,
+  deleteOrder,
+} from "../controllers/orderController.js";
 
 // Routes for order operations
-router.post("/", orderController.createOrder);
-router.get("/", orderController.getAllOrder);
-router.get("/:orderId", orderController.getById);
-router.put("/:orderId", orderController.updateOrder);
-router.delete("/:orderId", orderController.deleteOrder);
+router.post("/", createOrder);
+router.get("/", getAllOrder);
+router.get("/:orderId", getById);
+router.put("/:orderId", updateOrder);
+router.delete("/:orderId", deleteOrder);
 
-module.exports = router;
+export default router;

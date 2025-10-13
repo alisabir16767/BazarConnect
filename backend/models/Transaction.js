@@ -48,4 +48,4 @@ transactionSchema.pre("save", function (next) {
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 
-module.exports = Transaction;
+export default Transaction;

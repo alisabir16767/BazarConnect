@@ -1,9 +1,9 @@
-import Order from "../models/Order";
-import Shop from "../models/Shop";
-import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
+import Order from "../models/Order.js";
+import Shop from "../models/Shop.js";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware.js";
 
 // CREATE A NEW ORDER
-exports.createOrder = asyncWrap(async (req, res, next) => {
+export const createOrder = asyncWrap(async (req, res, next) => {
   const {
     shop_id,
     user_id,
@@ -32,7 +32,7 @@ exports.createOrder = asyncWrap(async (req, res, next) => {
 });
 
 // GET ALL ORDERS
-exports.getAllOrder = asyncWrap(async (req, res) => {
+export const getAllOrder = asyncWrap(async (req, res) => {
   const orders = await Order.find().populate(
     "user_id shop_id products.product_id"
   );
@@ -40,7 +40,7 @@ exports.getAllOrder = asyncWrap(async (req, res) => {
 });
 
 // GET ORDER BY ID
-exports.getById = asyncWrap(async (req, res, next) => {
+export const getById = asyncWrap(async (req, res, next) => {
   const order = await Order.findById(req.params.orderId).populate(
     "user_id shop_id products.product_id"
   );
@@ -51,7 +51,7 @@ exports.getById = asyncWrap(async (req, res, next) => {
 });
 
 // UPDATE EXISTING ORDER
-exports.updateOrder = asyncWrap(async (req, res, next) => {
+export const updateOrder = asyncWrap(async (req, res, next) => {
   const order = await Order.findByIdAndUpdate(req.params.orderId, req.body, {
     new: true,
   });
@@ -62,7 +62,7 @@ exports.updateOrder = asyncWrap(async (req, res, next) => {
 });
 
 // DELETE ORDER
-exports.deleteOrder = asyncWrap(async (req, res, next) => {
+export const deleteOrder = asyncWrap(async (req, res, next) => {
   const order = await Order.findById(req.params.orderId);
   if (!order) {
     return next(new ExpressError(404, "Order not found"));

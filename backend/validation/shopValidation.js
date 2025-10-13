@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from "joi";
 
-const shopSchema = Joi.object({
+export const shopSchema = Joi.object({
   owner_id: Joi.string().required(),
   products: Joi.array().items(Joi.string().optional()),
   name: Joi.string().required(),
@@ -13,7 +13,5 @@ const shopSchema = Joi.object({
   category: Joi.string().required(),
   images: Joi.array().items(Joi.string().required()).required(),
   created_at: Joi.date().default(Date.now),
-  updated_at: Joi.date().default(Date.now)
+  updated_at: Joi.date().default(Date.now),
 }).required();
-
-module.exports = { shopSchema };

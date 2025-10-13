@@ -4,7 +4,7 @@ import Product from "../models/Product.js";
 import { ExpressError, asyncWrap } from "../middleware/errorMiddleware.js";
 import { shopSchema } from "../validation/shopValidation.js";
 import sharp from "sharp";
-import { uploadBufferToCloudinary } from "../utils/cloudinary/uploadBufferToCloudinary.js";
+import { uploadBufferToCloudinary } from "../utils/cloudnary/uploadToCloudinary.js";
 
 /**
  * CREATE NEW SHOP (with multiple image upload)

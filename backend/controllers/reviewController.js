@@ -1,10 +1,10 @@
-import Review from "../models/Review";
-import Product from "../models/Product";
-import User from "../models/User";
-import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
+import Review from "../models/Review.js";
+import Product from "../models/Product.js";
+import User from "../models/User.js";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware.js";
 
 // CREATE REVIEW
-exports.createReview = asyncWrap(async (req, res) => {
+export const createReview = asyncWrap(async (req, res) => {
   const { product_id, user_id, rating, comment } = req.body;
   const product = await Product.findById(product_id);
   if (!product) {
@@ -28,7 +28,7 @@ exports.createReview = asyncWrap(async (req, res) => {
 });
 
 // RETRIEVE ALL REVIEWS
-exports.getAllReviews = asyncWrap(async (req, res) => {
+export const getAllReviews = asyncWrap(async (req, res) => {
   const reviews = await Review.find();
   if (reviews.length === 0) {
     return next(new ExpressError(404, "No Review Found"));
@@ -37,7 +37,7 @@ exports.getAllReviews = asyncWrap(async (req, res) => {
 });
 
 // GET REVIEW BY PRODUCT ID
-exports.getById = asyncWrap(async (req, res) => {
+export const getById = asyncWrap(async (req, res) => {
   const review = await Review.findById(req.params.reviewId);
   if (!review) {
     return next(new ExpressError(404, "Review does not exist"));
@@ -46,7 +46,7 @@ exports.getById = asyncWrap(async (req, res) => {
 });
 
 // UPDATE REVIEW
-exports.reviewUpdate = asyncWrap(async (req, res) => {
+export const reviewUpdate = asyncWrap(async (req, res) => {
   const review = await Review.findById(req.params.reviewId);
   if (!review) {
     return next(new ExpressError(404, "Review Not found"));
@@ -61,7 +61,7 @@ exports.reviewUpdate = asyncWrap(async (req, res) => {
 });
 
 // DELETE REVIEW
-exports.deleteReview = asyncWrap(async (req, res) => {
+export const deleteReview = asyncWrap(async (req, res) => {
   const review = await Review.findById(req.params.reviewId);
   if (!review) {
     return next(new ExpressError(404, "Review Not found"));

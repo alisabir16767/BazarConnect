@@ -1,8 +1,8 @@
-import Cart from "../models/Cart";
-import Product from "../models/Product";
-import { asyncWrap, ExpressError } from "../middleware/errorMiddleware";
+import Cart from "../models/Cart.js";
+import Product from "../models/Product.js";
+import { asyncWrap, ExpressError } from "../middleware/errorMiddleware.js";
 
-exports.getAllCart = asyncWrap(async (req, res, next) => {
+export const getAllCart = asyncWrap(async (req, res, next) => {
   const userId = req.user._id;
 
   const cart = await Cart.findOne({ user_id: userId }).populate(
@@ -15,7 +15,7 @@ exports.getAllCart = asyncWrap(async (req, res, next) => {
   res.status(200).json(cart);
 });
 
-exports.addToCart = asyncWrap(async (req, res, next) => {
+export const addToCart = asyncWrap(async (req, res, next) => {
   const userId = req.user._id;
   const { product_id, quantity } = req.body;
 
@@ -53,7 +53,7 @@ exports.addToCart = asyncWrap(async (req, res, next) => {
   res.status(201).json(cart);
 });
 
-exports.updateCart = asyncWrap(async (req, res, next) => {
+export const updateCart = asyncWrap(async (req, res, next) => {
   const userId = req.user._id;
   const { product_id, quantity } = req.body;
 
@@ -80,7 +80,7 @@ exports.updateCart = asyncWrap(async (req, res, next) => {
   }
 });
 
-exports.deleteCart = asyncWrap(async (req, res, next) => {
+export const deleteCart = asyncWrap(async (req, res, next) => {
   const userId = req.user._id;
   const { productId } = req.params;
 

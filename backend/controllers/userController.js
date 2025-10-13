@@ -1,10 +1,10 @@
-import User from "../models/User";
-import { ExpressError, asyncWrap } from "../middleware/errorMiddleware";
+import User from "../models/User.js";
+import { ExpressError, asyncWrap } from "../middleware/errorMiddleware.js";
 import { validationResult } from "express-validator";
 import passport from "passport";
 
 // CREATE USER
-exports.createUser = asyncWrap(async (req, res, next) => {
+export const createUser = asyncWrap(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(new ExpressError(400, errors.array()[0].msg));
@@ -45,7 +45,7 @@ exports.createUser = asyncWrap(async (req, res, next) => {
 });
 
 // GET ALL USERS
-exports.getAllUsers = asyncWrap(async (req, res, next) => {
+export const getAllUsers = asyncWrap(async (req, res, next) => {
   // if (req.user.role !== "admin") {
   //   return next(new ExpressError(403, "Unauthorized access"));
   // }
@@ -59,7 +59,7 @@ exports.getAllUsers = asyncWrap(async (req, res, next) => {
 });
 
 // GET USER BY ID
-exports.getUserById = asyncWrap(async (req, res, next) => {
+export const getUserById = asyncWrap(async (req, res, next) => {
   const user = await User.findById(req.params.userId).select(
     "-hash -salt -loginAttempts"
   );
@@ -79,7 +79,7 @@ exports.getUserById = asyncWrap(async (req, res, next) => {
 });
 
 // UPDATE USER
-exports.updateUser = asyncWrap(async (req, res, next) => {
+export const updateUser = asyncWrap(async (req, res, next) => {
   const user = await User.findById(req.params.userId);
 
   if (!user) {
@@ -124,7 +124,7 @@ exports.updateUser = asyncWrap(async (req, res, next) => {
 });
 
 // DELETE USER
-exports.deleteUser = asyncWrap(async (req, res, next) => {
+export const deleteUser = asyncWrap(async (req, res, next) => {
   const user = await User.findById(req.params.userId);
 
   if (!user) {
@@ -143,7 +143,7 @@ exports.deleteUser = asyncWrap(async (req, res, next) => {
   });
 });
 
-exports.getCurrentUser = asyncWrap(async (req, res) => {
+export const getCurrentUser = asyncWrap(async (req, res) => {
   const user = await User.findById(req.user.id).select(
     "-hash -salt -loginAttempts"
   );
