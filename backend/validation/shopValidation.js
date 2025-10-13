@@ -11,7 +11,7 @@ export const shopSchema = Joi.object({
   address: Joi.array().items(Joi.string().required()).required(),
   zip_code: Joi.string().required(),
   category: Joi.string().required(),
-  images: Joi.array().items(Joi.string().required()).required(),
+  images: Joi.array().optional(),
   created_at: Joi.date().default(Date.now),
   updated_at: Joi.date().default(Date.now),
 }).required();
