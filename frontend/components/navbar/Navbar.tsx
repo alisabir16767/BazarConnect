@@ -1,42 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import SearchBox from "../SearchBox";
 import Logout from "../Logout";
-import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const checkAuth = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/isAuthenticated`,
-        { withCredentials: true }
-      );
-      console.log("isAuthenticated response:", res.data);
-      setIsLoggedIn(res.data.loggedIn);
-      setError(null);
-    } catch (err) {
-      console.error("Auth check failed:", err);
-      setIsLoggedIn(false);
-      setError("Auth check failed");
-    }
-  };
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  // Re-check auth periodically
-  useEffect(() => {
-    const interval = setInterval(checkAuth, 5000); // Poll every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  const { isLoggedIn } = useAuth();
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b shadow-sm">
@@ -126,12 +98,6 @@ export default function Navbar() {
               </>
             )}
           </ul>
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-100 text-red-700 text-center py-2 text-sm">
-          {error}
         </div>
       )}
     </nav>

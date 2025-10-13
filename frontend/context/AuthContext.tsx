@@ -1,18 +1,15 @@
-// context/AuthContext.tsx
 "use client";
 
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 
 interface AuthContextType {
   isLoggedIn: boolean | null;
-  setIsLoggedIn: (status: boolean) => void;
+  setIsLoggedIn: (value: boolean) => void;
+  checkAuth: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextType>({
-  isLoggedIn: null,
-  setIsLoggedIn: () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -33,8 +30,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
 };

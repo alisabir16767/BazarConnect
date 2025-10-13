@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,7 @@ const loginSchema = z.object({
 const LoginForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { setIsLoggedIn } = useAuth();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -40,21 +42,21 @@ const LoginForm = () => {
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/login` ,data,
-        {
-          withCredentials: true, 
-        }
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
+        data,
+        { withCredentials: true }
       );
-      console.log(response.data);
 
       toast({
         title: "Login Successful",
         description: "You have successfully logged in",
-        variant:"default",
+        variant: "default",
       });
 
       if (response.status === 200) {
-        router.push("/");
+        setIsLoggedIn(true); // Update global auth state
+        router.push("/"); // Redirect to homepage
       }
     } catch (error) {
       console.error(error);
@@ -104,11 +106,7 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full"
-          >
+          <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
