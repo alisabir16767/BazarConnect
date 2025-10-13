@@ -4,7 +4,8 @@ import "./globals.css";
 import Footer from "@/components/navbar/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import ReduxProvider from "./redux/Provider";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/context/AuthContext"; // ✅ import
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,15 +28,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ReduxProvider>
-          <Navbar />
-          <div className="flex flex-col min-h-screen">
-            {/* Main Content */}
-            <main className="flex-grow px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12">
-              {children}
-            </main>
-            <Toaster/>
-            <Footer />
-          </div>
+          <AuthProvider> {/* ✅ Wrap your app with AuthProvider */}
+            <Navbar />
+            <div className="flex flex-col min-h-screen">
+              {/* Main Content */}
+              <main className="flex-grow px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12">
+                {children}
+              </main>
+              <Toaster />
+              <Footer />
+            </div>
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>
