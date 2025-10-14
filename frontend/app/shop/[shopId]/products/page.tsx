@@ -38,9 +38,14 @@ export default function ProductsPage({ params }: { params: { shopId: string } })
 
         setShop(shopRes.data);
         setProducts(Array.isArray(productRes.data) ? productRes.data : []);
-      } catch (error: any) {
-        console.error("Error fetching shop or products:", error.response?.data || error.message);
-      } finally {
+      }  catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Axios error:", error.response?.data || error.message);
+        } else {
+          console.error("Unknown error:", error);
+        }
+      }
+       finally {
         setLoading(false);
       }
     };
