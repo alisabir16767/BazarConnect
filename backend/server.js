@@ -36,7 +36,7 @@ const corsOrigins = process.env.CORS_ORIGIN
 const allowedOrigins = [
   ...corsOrigins,
 
-  "https://bazar-connect-raez.vercel.app",
+  "https://bazar-connect.vercel.app",
   "http://localhost:3000",
 ];
 
