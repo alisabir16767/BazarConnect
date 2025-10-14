@@ -11,17 +11,18 @@ export const createProduct = asyncWrap(async (req, res, next) => {
   const { error, value } = productSchema.validate(req.body);
   if (error) return next(new ExpressError(400, error.details[0].message));
 
-  const { shop_id } = value;
-  if (!mongoose.Types.ObjectId.isValid(shop_id)) {
-    return next(new ExpressError(400, "Invalid shop_id format"));
+  const { shopId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(shopId)) {
+    return next(new ExpressError(400, "Invalid shopId format"));
   }
 
-  const shop = await Shop.findById(shop_id);
+  const shop = await Shop.findById(shopId);
   if (!shop) return next(new ExpressError(404, "Shop not found"));
 
   let imageUrls = [];
 
-  //  Handle multiple file uploads
+  // Handle multiple file uploads
   if (req.files && req.files.length > 0) {
     const uploadPromises = req.files.map(async (file) => {
       const compressedBuffer = await sharp(file.buffer)
@@ -41,6 +42,7 @@ export const createProduct = asyncWrap(async (req, res, next) => {
 
   const newProduct = new Product({
     ...value,
+    shop_id: shopId,
     images: imageUrls,
   });
 

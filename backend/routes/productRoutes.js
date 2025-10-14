@@ -10,7 +10,8 @@ import {
   getProductByShopId,
 } from "../controllers/productController.js";
 
-router.post("/", upload.array("images", 5), createProduct);
+// Create product by shopId
+router.post("/shop/:shopId", upload.array("images", 5), createProduct);
 
 router.get("/", getAllProduct);
 
